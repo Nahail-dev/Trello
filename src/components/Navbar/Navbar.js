@@ -46,7 +46,11 @@ const Navbar = () => {
   const [activeTab, setActiveTab] = useState("members");
 
   const toggleDropdown = useCallback(
-    (dropdownName) => {
+    (dropdownName, e) => {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
       setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
     },
     [activeDropdown]
@@ -57,23 +61,24 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       // Don't do anything if no dropdown is open
       if (!activeDropdown) return;
-
-      // Get all elements that should keep the dropdown open when clicked
-      const keepOpenSelectors = [
-        `[data-dropdown="${activeDropdown}"]`, // The toggle that opened this dropdown
-        `#${activeDropdown}-dropdown`, // The dropdown itself
-        ".modal-dialog", // Any modal dialogs
-        ".modal-backdrop", // Modal backdrops
-      ];
-
-      // Check if click is inside any of the keep-open elements
-      const shouldKeepOpen = keepOpenSelectors.some((selector) => {
-        const element = document.querySelector(selector);
-        return element && element.contains(event.target);
-      });
-
-      // Close the dropdown if click is outside
-      if (!shouldKeepOpen) {
+      
+      // Check if click is on a dropdown toggle or inside a dropdown
+      const isDropdownToggle = event.target.closest(`[data-dropdown]`);
+      const isInsideDropdown = event.target.closest(`.dropdown-content, .menu-dropdown, .card-popup`);
+      
+      // If click is on a different dropdown toggle, close current and open new one
+      if (isDropdownToggle) {
+        const dropdownName = isDropdownToggle.getAttribute('data-dropdown');
+        if (dropdownName !== activeDropdown) {
+          setActiveDropdown(dropdownName);
+        } else {
+          setActiveDropdown(null);
+        }
+        return;
+      }
+      
+      // If click is not inside any dropdown, close the active one
+      if (!isInsideDropdown) {
         setActiveDropdown(null);
       }
     };
@@ -116,7 +121,11 @@ const Navbar = () => {
         <h2 className="app-logo">Aut eum omnis consec</h2>
 
         <div className="nav-icon-wrapper">
-          <div className="nav-left-icon" onClick={() => toggleDropdown("menu")}>
+          <div 
+            className="nav-left-icon" 
+            data-dropdown="menu"
+            onClick={(e) => toggleDropdown("menu", e)}
+          >
             <div className="bx bx-menu-alt-right" />
             <div className="bx bx-chevron-down fs-5" />
           </div>
@@ -130,7 +139,11 @@ const Navbar = () => {
                   <h2 className="app-dropdown-title">Upgrade for views</h2>
                   <div
                     className="bx bx-x nav-close-icon"
-                    onClick={() => toggleDropdown("menu")}
+                    data-dropdown-toggle="menu"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDropdown("menu");
+                    }}
                   />
                 </div>
               }
@@ -193,7 +206,8 @@ const Navbar = () => {
         <div className="nav-icon-wrapper ">
           <div
             className="app-nav-avatar"
-            onClick={() => toggleDropdown("profile")}
+            data-dropdown="profile"
+            onClick={(e) => toggleDropdown("profile", e)}
           >
             AT
           </div>
@@ -206,7 +220,7 @@ const Navbar = () => {
                     className="bx bx-x profile-close text-black"
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleDropdown("profile");
+                      setActiveDropdown(null);
                     }}
                   />
                   <div className="profile-avatar">AT</div>
@@ -226,8 +240,9 @@ const Navbar = () => {
         </div>
 
         <div
-          className="nav-icon-wrapper  d-md-block d-none"
-          onClick={() => toggleDropdown("ups")}
+          className="nav-icon-wrapper d-md-block d-none"
+          data-dropdown="ups"
+          onClick={(e) => toggleDropdown("ups", e)}
         >
           <BiSolidPlaneAlt className="app-nav-icon" />
           <span className="app-tool-tip">Plane</span>
@@ -241,7 +256,7 @@ const Navbar = () => {
                     className="bx bx-x profile-close text-white"
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleDropdown("ups");
+                      setActiveDropdown(null);
                     }}
                   />
                 </div>
@@ -272,7 +287,8 @@ const Navbar = () => {
 
         <div
           className="nav-icon-wrapper d-md-block d-none"
-          onClick={() => toggleDropdown("setting")}
+          data-dropdown="setting"
+          onClick={(e) => toggleDropdown("setting", e)}
         >
           <PiWrench className="app-nav-icon" />
           <span className="app-tool-tip">Settings</span>
@@ -284,7 +300,7 @@ const Navbar = () => {
                   className="close-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleDropdown("setting");
+                    setActiveDropdown(null);
                   }}
                 >
                   ×
@@ -327,28 +343,32 @@ const Navbar = () => {
         <div className="nav-icon-wrapper d-md-block d-none">
           <div
             className="app-nav-icon"
-            onClick={() => toggleDropdown("newmenu")}
+            data-dropdown="newmenu"
+            onClick={(e) => toggleDropdown("newmenu", e)}
           >
             <IoMdMenu />
             <span className="app-tool-tip">Menu</span>
           </div>
 
           {activeDropdown === "newmenu" && (
-            <div className="menu-dropdown" onClick={(e) => e.stopPropagation()}>
-              <div className="menu-header">
+            <div className="menu-dropdown" >
+              <div className="menu-header mt-4">
                 <h6 className="menu-title">Filter</h6>
                 <button
-                  className="close-btn"
-                  onClick={() => toggleDropdown("newmenu")}
+                  className="newmenue-close-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveDropdown(null);
+                  }}
                   aria-label="Close menu"
                 >
-                  <div className="bx bx-x close-btn text-white" />
+                  <div className="bx bx-x" />
                 </button>
               </div>
 
               <div className="menu-content">
                 <div className="menu-section">
-                  <label className="menu-label">Keyword</label>
+                  <label className="menu-label mb-2">Keyword</label>
                   <input
                     type="text"
                     placeholder="Enter a keyword..."
@@ -428,7 +448,8 @@ const Navbar = () => {
 
         <div
           className="nav-icon-wrapper d-md-block d-none"
-          onClick={() => toggleDropdown("star")}
+          data-dropdown="star"
+          onClick={(e) => toggleDropdown("star", e)}
         >
           <MdOutlineStarBorder className="app-nav-icon" />
           <span className="app-tool-tip">Star</span>
@@ -437,7 +458,13 @@ const Navbar = () => {
               <div className="card-popup" id="popup-star">
                 <div className="d-flex justify-content-between align-items-center border-0">
                   <h6 className="upgrade-title m-0 mx-auto mt-2">Favorites</h6>
-                  <IoMdClose />
+                  <IoMdClose 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveDropdown(null);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  />
                 </div>
                 <p>Starred boards and items will appear here.</p>
                 <div className="rating">
@@ -455,7 +482,8 @@ const Navbar = () => {
 
         <div
           className="nav-icon-wrapper d-md-block d-none"
-          onClick={() => toggleDropdown("group")}
+          data-dropdown="group"
+          onClick={(e) => toggleDropdown("group", e)}
         >
           <BiGroup className="app-nav-icon" />
           <span className="app-tool-tip">Group</span>
@@ -500,34 +528,36 @@ const Navbar = () => {
         <div className=" d-md-block d-none">
           <button
             className="app-nav-btn"
-            onClick={() => toggleDropdown("share")}
+            data-dropdown="share"
+            onClick={(e) => toggleDropdown("share", e)}
           >
             Share
           </button>
 
           {/* Modal Backdrop */}
-          <div
-            className={`modal-backdrop fade ${
-              activeDropdown === "share" ? "show" : ""
-            }`}
-            style={{
-              display: activeDropdown === "share" ? "block" : "none",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 1040,
-            }}
-            onClick={() => toggleDropdown("share")}
-          ></div>
+          {activeDropdown === "share" && (
+            <div
+              className="modal-backdrop show"
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 1040,
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveDropdown(null);
+              }}
+            ></div>
+          )}
 
           {/* Modal */}
           <div
-            className={`modal fade ${activeDropdown === "share" ? "show" : ""}`}
+            className={`modal ${activeDropdown === "share" ? "show d-block" : "d-none"}`}
             style={{
-              display: activeDropdown === "share" ? "block" : "none",
               position: "fixed",
               top: 0,
               left: 0,
@@ -540,6 +570,10 @@ const Navbar = () => {
             tabIndex="-1"
             role="dialog"
             aria-hidden={activeDropdown !== "share"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveDropdown(null);
+            }}
           >
             <div
               className="modal-dialog modal-dialog-centered modal-md"
@@ -548,13 +582,20 @@ const Navbar = () => {
               <div
                 className="modal-content custom-modal-content"
                 onClick={(e) => e.stopPropagation()}
+                style={{
+                  margin: "1.75rem auto",
+                  maxWidth: "500px"
+                }}
               >
                 <div className="modal-header border-0">
                   <h5 className="modal-title text-white">Share board</h5>
                   <button
                     type="button"
                     className="btn-close btn-close-white"
-                    onClick={() => toggleDropdown("share")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveDropdown(null);
+                    }}
                     aria-label="Close"
                   />
                 </div>
@@ -684,7 +725,8 @@ const Navbar = () => {
           <div className="dropdown">
             <HiOutlineDotsHorizontal
               className="app-nav-icon-dots"
-              onClick={() => toggleDropdown("dot")}
+              data-dropdown="dot"
+              onClick={(e) => toggleDropdown("dot", e)}
               id="dropdownMenuButton"
               data-bs-toggle="dropdown"
               aria-expanded={activeDropdown === "dot" ? "true" : "false"}
