@@ -323,26 +323,31 @@
   margin-right: 8px;
 }
 .custom-tabs {
-  background-color: #1d2125;
   padding: 0.5rem;
   border-radius: 0.75rem;
   display: flex;
   justify-content: center;
   border: 2px solid #a6c5e229;
-  position: sticky;
+  width: fit-content;
+  gap: 0.5rem;
+  background-color: #1d2125;
+  margin: 0 auto;
+}
+.trello-nav-tabs {
+  position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  top: 0;
-  width: fit-content;
-  z-index: 10;
-  transform: translateX(-50%);
-  left: 50%;
-  top: 120%;
-  gap: 0.5rem; /* Add gap between tabs */
+  display: flex;
+  justify-content: center;
+  background-color: #1d2125;
+  padding: 0.5rem 0;
+  z-index: 1000;
+
 }
 
 .custom-tabs .nav-link {
-  color: #9fadbc; /* Default text color */
+  color: #9fadbc; 
   background-color: transparent;
   border: none;
   border-radius: 0.5rem;

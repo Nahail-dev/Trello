@@ -111,6 +111,7 @@ function Tcard() {
         </div>
 
         {/* Navigation Tabs */}
+        <div className="trello-nav-tabs">
         <ul className="nav custom-tabs">
           <li className="nav-item">
             <Link
@@ -188,6 +189,8 @@ function Tcard() {
             </Link>
           </li>
         </ul>
+        </div>
+       
       </section>
     </div>
   );
