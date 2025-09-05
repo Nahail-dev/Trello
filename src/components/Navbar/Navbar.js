@@ -216,7 +216,7 @@ const Navbar = () => {
               >
                 <div className="profile-header">
                   <IoMdClose
-                    className="profile-close"
+                    className="profile-close text-black"
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleDropdown("profile");
