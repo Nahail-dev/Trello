@@ -1,0 +1,230 @@
+/* Menu Dropdown */
+.menu-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 300px;
+  max-height: 70vh; /* 70% of viewport height */
+  display: flex;
+  flex-direction: column;
+  background-color: #282e33;
+  color: #b6c2cf;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, 'Droid Sans', 'Helvetica Neue', sans-serif;
+  animation: fadeIn 0.15s ease-out;
+  overflow: hidden; /* Ensures border-radius clips the content */
+}
+
+.menu-content {
+  overflow-y: auto;
+  max-height: calc(70vh - 60px); /* Subtract header height */
+  padding-bottom: 8px; /* Add some space at the bottom */
+}
+
+/* Custom scrollbar */
+.menu-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menu-content::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+
+.menu-content::-webkit-scrollbar-thumb {
+  background-color: #5e6c84;
+  border-radius: 3px;
+}
+
+.menu-content::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7b9a;
+}
+
+/* Header */
+.menu-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  position: relative;
+  flex-shrink: 0; /* Prevent header from shrinking */
+  
+}
+
+.menu-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #b6c2cf;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  flex: 1;
+}
+
+.close-btn {
+  cursor: pointer;
+  color: #9fadbc;
+  font-size: 20px;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+/* Sections */
+.menu-section {
+  padding: 8px 16px;
+}
+
+.menu-section + .menu-section {
+  padding-top: 0;
+}
+
+.menu-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #9fadbc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Input Fields */
+.menu-input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background-color: #22272b;
+  border: 1px solid #3d474f;
+  border-radius: 4px;
+  color: #b6c2cf;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.menu-input:focus {
+  outline: none;
+  border-color: #5ba4cf;
+  box-shadow: 0 0 0 2px rgba(88, 168, 207, 0.3);
+}
+
+.menu-hint {
+  display: block;
+  color: #9fadbc;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Options */
+.menu-option {
+  display: flex;
+  align-items: center;
+  padding:5px 10px;
+  margin: 2px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-option:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.menu-option input[type="checkbox"] {
+  margin-right: 1px;
+  cursor: pointer;
+}
+
+/* Icons */
+.menu-icon {
+  margin-right: 10px;
+  font-size: 16px;
+  color: #9fadbc;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Avatar */
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fa9d2c;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+/* Label Colors */
+.label-colors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.label-color {
+ width: 100%;
+ height: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.label-color:hover {
+  transform: scale(1.1);
+}
+
+.label-color.green { background-color: #61bd4f; }
+.label-color.yellow { background-color: #f2d600; }
+.label-color.orange { background-color: #ff9f1a; }
+
+/* Dropdown */
+.menu-dropdown-select {
+  width: 100%;
+  padding: 8px 12px;
+  margin-top: 8px;
+  background-color: #22272b;
+  border: 1px solid #3d474f;
+  border-radius: 4px;
+  color: #b6c2cf;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-dropdown-select:focus {
+  outline: none;
+  border-color: #5ba4cf;
+  box-shadow: 0 0 0 2px rgba(88, 168, 207, 0.3);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

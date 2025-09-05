@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Table",
+    "leftIcon": "FaTable",
+    "rightIcon": "FaLock"
+  },
+  {
+    "id": 2,
+    "name": "Calendar",
+    "leftIcon": "FaRegCalendarAlt",
+    "rightIcon": "FaLock"
+  },
+  {
+    "id": 3,
+    "name": "Timeline",
+    "leftIcon": "FaAlgolia",
+    "rightIcon": "FaLock"
+  },
+  {
+    "id": 4,
+    "name": "Dashboard",
+    "leftIcon": "MdDashboard",
+    "rightIcon": "FaLock"
+  },
+  {
+    "id": 5,
+    "name": "Map",
+    "leftIcon": "FaMapMarkerAlt",
+    "rightIcon": "FaLock"
+  }
+]

@@ -1,0 +1,31 @@
+{
+    "title": "Automation",
+    "icon": "IoMdClose",
+    "items": [
+      {
+        "id": 1,
+        "icon": "RiBook2Fill",
+        "title": "Rules",
+        "description": "Lorem ipsum dolor sit amet psum dolor laboriosam!"
+      },
+      {
+        "id": 2,
+        "icon": "GiConsoleController",
+        "title": "Button",
+        "description": "Lorem ipsum dolor sit amet psum dolor laboriosam!"
+      },
+      {
+        "id": 3,
+        "icon": "IoMailOutline",
+        "title": "Email",
+        "description": "Lorem ipsum dolor sit amet psum dolor laboriosam!"
+      },
+      {
+        "id": 4,
+        "icon": "MdOutlineFeedback",
+        "title": "Feedback",
+        "description": "Lorem ipsum dolor sit amet psum dolor laboriosam!"
+      }
+    ]
+  }
+  
