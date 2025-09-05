@@ -33,17 +33,14 @@ body {
   align-items: center;
 }
 
-.app-select-icon {
+.nav-left-icon {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
   font-size: 20px;
   position: relative;
 }
 
-.app-chevron-icon {
-  font-size: 16px;
-}
 .app-nav-icon,
 .app-nav-icon-dots {
   font-size: 20px;
@@ -54,7 +51,6 @@ body {
   border-radius: 4px;
 }
 
-.app-nav-icon:hover,
 .app-nav-icon-dots:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
@@ -92,16 +88,16 @@ body {
   position: relative;
 }
 
-.app-icon-wrapper {
+.nav-icon-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-
+  cursor: pointer;
   border-radius: 4px;
 }
 
-.app-icon-wrapper:hover {
+.nav-icon-wrapper:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -123,7 +119,7 @@ body {
   transition: opacity 0.2s ease-in-out;
 }
 
-.app-icon-wrapper:hover .app-tool-tip {
+.nav-icon-wrapper:hover .app-tool-tip {
   opacity: 1;
   visibility: visible;
 }
@@ -155,11 +151,10 @@ body {
   margin-right: 10px;
 }
 
-.app-close-icon {
+.nav-close-icon {
   font-size: 20px;
   cursor: pointer;
   color: #9fadbc;
-  flex-shrink: 0;
 }
 
 .app-dropdown-content {
@@ -197,8 +192,7 @@ body {
   color: #4b5763;
 }
 
-.app-d-icon-left,
-.app-d-icon-right {
+.app-d-ico {
   font-size: 14px;
   color: #4b5763;
 }
@@ -278,8 +272,7 @@ h2 {
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 18px;
-  color: #0e141e;
+
   cursor: pointer;
   z-index: 10;
 }
@@ -373,21 +366,6 @@ h2 {
 }
 
 /* Settings Dropdown */
-.card-popup {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  width: 300px;
-  background-color: #22272b;
-  color: #9fadbc;
-  border-radius: 8px;
-  padding: 12px 0;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  border: 1px solid #444;
-  max-height: 500px;
-  overflow-y: auto;
-}
 
 .popup-header {
   display: flex;
@@ -480,16 +458,6 @@ h2 {
   right: 28px;
 }
 
-.app-icon-wrapper {
-  position: relative;
-  cursor: pointer;
-}
-
-.app-icon-wrapper:hover .app-tool-tip {
-  opacity: 1;
-  visibility: visible;
-}
-
 .card-popup::-webkit-scrollbar {
   width: 6px;
 }
@@ -508,44 +476,24 @@ h2 {
   position: absolute;
   top: 100%;
   right: 0;
-  width: 280px;
+  width: 350px;
   background-color: #22272b;
-  color: #9fadbc;
+  color: #515c65;
   border-radius: 8px;
   padding: 16px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   border: 1px solid #444;
   margin-top: 8px;
-}
-.card-popup h6 {
   font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #9fadbc;
 }
-.card-popup ul {
-  padding-left: 0;
-  list-style: none;
-  font-size: 14px;
-  margin-bottom: 0;
-}
+
 .card-popup ul li {
-  margin-bottom: 8px;
-  padding: 6px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 .card-popup ul li:hover {
   background-color: rgba(255, 255, 255, 0.1);
-}
-.card-popup p {
-  margin-bottom: 0;
-  font-size: 14px;
 }
 
 .star-icon {
@@ -837,7 +785,7 @@ h2 {
 }
 
 @media (max-width: 731px) {
-  .app-icon-wrapper {
+  .nav-icon-wrapper {
     min-width: 32px;
     width: 32px;
     height: 32px;
