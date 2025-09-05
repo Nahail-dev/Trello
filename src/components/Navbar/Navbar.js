@@ -591,7 +591,7 @@ const Navbar = () => {
                   <ul className="nav nav-tabs border-secondary mb-3" role="tablist">
                     <li className="nav-item" role="presentation">
                       <button
-                        className={`nav-link ${activeTab === 'members' ? 'active bg-light bg-opacity-10 ' : ''}  border-0`}
+                        className={`nav-link ${activeTab === 'members' ? 'active bg-white bg-opacity-10 ' : ''}  border-0`}
                         onClick={() => setActiveTab('members')}
                         role="tab"
                         aria-selected={activeTab === 'members'}
@@ -602,7 +602,7 @@ const Navbar = () => {
                     </li>
                     <li className="nav-item" role="presentation">
                       <button
-                        className={`nav-link ${activeTab === 'requests' ? 'active bg-white bg-opacity-10 ' : ''} `}
+                        className={`nav-link ${activeTab === 'requests' ? 'active bg-white bg-opacity-10  ' : ''} `}
                         onClick={() => setActiveTab('requests')}
                         role="tab"
                         aria-selected={activeTab === 'requests'}
