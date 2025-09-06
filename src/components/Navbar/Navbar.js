@@ -40,11 +40,12 @@ const iconMap = {
 const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null)
   const [activeTab, setActiveTab] = useState("members")
+  const [activeMemberDropdown, setActiveMemberDropdown] = useState(null)
+  const [activeSelectDropdown, setActiveSelectDropdown] = useState(null)
+  const [selectedRole, setSelectedRole] = useState("Member")
+  const [selectedLabel, setSelectedLabel] = useState("Select labels")
+  const [activeDotsDropdown, setActiveDotsDropdown] = useState(null)
 
-  /**
-   * Toggle dropdown safely using functional state update
-   * This ensures only one dropdown is active at a time
-   */
   const toggleDropdown = useCallback((dropdownName, e) => {
     if (e) {
       e.stopPropagation()
@@ -56,11 +57,41 @@ const Navbar = () => {
     })
   }, [])
 
-  /**
-   * Handle outside click and Escape key to close dropdowns
-   */
+  const toggleMemberDropdown = useCallback((memberName, e) => {
+    if (e) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+    setActiveMemberDropdown((prev) => {
+      if (prev === memberName) return null
+      return memberName
+    })
+  }, [])
+
+  const toggleSelectDropdown = useCallback((selectName, e) => {
+    if (e) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+    setActiveSelectDropdown((prev) => {
+      if (prev === selectName) return null
+      return selectName
+    })
+  }, [])
+
+  const toggleDotsDropdown = useCallback((dotsName, e) => {
+    if (e) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+    setActiveDotsDropdown((prev) => {
+      if (prev === dotsName) return null
+      return dotsName
+    })
+  }, [])
+
   useEffect(() => {
-    if (!activeDropdown) return
+    if (!activeDropdown && !activeMemberDropdown && !activeSelectDropdown && !activeDotsDropdown) return
 
     const handleClickOutside = (event) => {
       const isInside = event.target.closest(
@@ -71,17 +102,29 @@ const Navbar = () => {
          .app-dropdown-btn,
          .app-active-link,
          .modal-content,
-         [data-dropdown="${activeDropdown}"]`,
+         .member-dropdown,
+         .select-dropdown,
+         .dots-dropdown,
+         [data-dropdown="${activeDropdown}"],
+         [data-member-dropdown="${activeMemberDropdown}"],
+         [data-select-dropdown="${activeSelectDropdown}"],
+         [data-dots-dropdown="${activeDotsDropdown}"]`,
       )
 
       if (!isInside) {
         setActiveDropdown(null)
+        setActiveMemberDropdown(null)
+        setActiveSelectDropdown(null)
+        setActiveDotsDropdown(null)
       }
     }
 
     const handleEscape = (e) => {
       if (e.key === "Escape") {
         setActiveDropdown(null)
+        setActiveMemberDropdown(null)
+        setActiveSelectDropdown(null)
+        setActiveDotsDropdown(null)
       }
     }
 
@@ -97,7 +140,8 @@ const Navbar = () => {
       document.removeEventListener("keydown", handleEscape)
       document.body.style.overflow = ""
     }
-  }, [activeDropdown])
+  }, [activeDropdown, activeMemberDropdown, activeSelectDropdown, activeDotsDropdown])
+
   return (
     <nav className="app-navbar">
       <div className="app-navbar-left gap-sm-4 gap-2">
@@ -177,14 +221,14 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="app-navbar-right gap-2 gap-sm-4 ">
-        <div className="nav-icon-wrapper ">
+      <div className="app-navbar-right gap-2 gap-sm-4">
+        <div className="nav-icon-wrapper">
           <div className="app-nav-avatar" data-dropdown="profile" onClick={(e) => toggleDropdown("profile", e)}>
             AT
           </div>
           <span className="app-tool-tip">Profile</span>
           {activeDropdown === "profile" && (
-            <div className="profile-popup ">
+            <div className="profile-popup">
               <div className="profile-header">
                 <div
                   className="bx bx-x profile-close text-black"
@@ -387,9 +431,69 @@ const Navbar = () => {
                     <div className="label-color yellow" title="Yellow" />
                     <div className="label-color orange" title="Orange" />
                   </div>
-                  <select className="menu-dropdown-select">
-                    <option>Select labels</option>
-                  </select>
+                  <div className="member-dropdown-wrapper">
+                    <button
+                      className="member-dropdown-btn"
+                      data-select-dropdown="labelSelect"
+                      onClick={(e) => toggleSelectDropdown("labelSelect", e)}
+                      style={{ width: "100%", justifyContent: "space-between" }}
+                    >
+                      {selectedLabel}
+                      <span className="dropdown-arrow">▼</span>
+                    </button>
+                    {activeSelectDropdown === "labelSelect" && (
+                      <div className="member-dropdown" style={{ width: "100%" }}>
+                        <div
+                          className={`member-dropdown-item ${selectedLabel === "Select labels" ? "active" : ""}`}
+                          onClick={() => {
+                            setSelectedLabel("Select labels")
+                            setActiveSelectDropdown(null)
+                          }}
+                        >
+                          Select labels
+                        </div>
+                        <div
+                          className={`member-dropdown-item ${selectedLabel === "Green Label" ? "active" : ""}`}
+                          onClick={() => {
+                            setSelectedLabel("Green Label")
+                            setActiveSelectDropdown(null)
+                          }}
+                        >
+                          <span
+                            className="label-color green me-2"
+                            style={{ width: "12px", height: "12px", display: "inline-block" }}
+                          ></span>
+                          Green Label
+                        </div>
+                        <div
+                          className={`member-dropdown-item ${selectedLabel === "Yellow Label" ? "active" : ""}`}
+                          onClick={() => {
+                            setSelectedLabel("Yellow Label")
+                            setActiveSelectDropdown(null)
+                          }}
+                        >
+                          <span
+                            className="label-color yellow me-2"
+                            style={{ width: "12px", height: "12px", display: "inline-block" }}
+                          ></span>
+                          Yellow Label
+                        </div>
+                        <div
+                          className={`member-dropdown-item ${selectedLabel === "Orange Label" ? "active" : ""}`}
+                          onClick={() => {
+                            setSelectedLabel("Orange Label")
+                            setActiveSelectDropdown(null)
+                          }}
+                        >
+                          <span
+                            className="label-color orange me-2"
+                            style={{ width: "12px", height: "12px", display: "inline-block" }}
+                          ></span>
+                          Orange Label
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -440,7 +544,7 @@ const Navbar = () => {
             <div>
               <div className="card-popup" id="popup-visibility">
                 <div className="d-flex justify-content-between align-items-center mb-2">
-                  <h6 className="upgrade-title mx-auto text-secondary ">Change visibility</h6>
+                  <h6 className="upgrade-title mx-auto text-secondary">Change visibility</h6>
                   <div className="bx bx-x fs-5" />
                 </div>
                 <p className="">
@@ -449,19 +553,19 @@ const Navbar = () => {
                 </p>
                 <p>Lorem ipsum dolor sit amet psum dolor laboriosam!</p>
                 <p />
-                <p className=" my-1">
-                  <BiGroup className=" me-1 " />
+                <p className="my-1">
+                  <BiGroup className="me-1" />
                   <strong>Workspace</strong>
                 </p>
                 <p>Lorem ipsum dolor sit amet psum dolor laboriosam!</p>
                 <p />
-                <p className=" my-1">
-                  <BiGroup className=" me-1" />
+                <p className="my-1">
+                  <BiGroup className="me-1" />
                   <strong>Organize all</strong>
                 </p>
                 <p>Lorem ipsum dolor sit amet psum dolor laboriosam!</p>
                 <p />
-                <p className=" my-1">
+                <p className="my-1">
                   <IoPerson className="me-1" />
                   <strong>Public</strong>
                 </p>
@@ -472,12 +576,11 @@ const Navbar = () => {
           )}
         </div>
 
-        <div className=" d-md-block d-none">
+        <div className="d-md-block d-none">
           <button className="app-nav-btn" data-dropdown="share" onClick={(e) => toggleDropdown("share", e)}>
             Share
           </button>
 
-          {/* Modal Backdrop */}
           {activeDropdown === "share" && (
             <div
               className="modal-backdrop show"
@@ -495,10 +598,9 @@ const Navbar = () => {
                   setActiveDropdown(null)
                 }
               }}
-            ></div>
+            />
           )}
 
-          {/* Modal */}
           <div className={`modal ${activeDropdown === "share" ? "show d-block" : "d-none"}`}>
             <div
               className="modal-dialog modal-dialog-centered modal-md"
@@ -513,7 +615,7 @@ const Navbar = () => {
                 }}
               >
                 <div className="modal-header border-0">
-                  <h5 className="modal-title ">Share board</h5>
+                  <h5 className="modal-title">Share board</h5>
                   <button
                     type="button"
                     className="btn-close btn-close-white"
@@ -527,25 +629,60 @@ const Navbar = () => {
                 <div className="modal-body">
                   <div className="mb-3 d-flex">
                     <input type="text" className="form-control me-2 custom-input" placeholder="Email address or name" />
-                    <select className="form-select custom-select me-2" style={{ width: "auto" }}>
-                      <option>Member</option>
-                      <option>Admin</option>
-                    </select>
-                    <button className="btn btn-primary">Share</button>
-                  </div>
-                  <div className="mb-3">
-                    <Link href="/" className="text-link">
-                      Create link
-                    </Link>
+                    <div className="member-dropdown-wrapper me-2">
+                      <button
+                        className="member-dropdown-btn"
+                        data-select-dropdown="roleSelect"
+                        onClick={(e) => toggleSelectDropdown("roleSelect", e)}
+                        style={{ width: "auto", minWidth: "100px" }}
+                      >
+                        {selectedRole}
+                        <span className="dropdown-arrow">▼</span>
+                      </button>
+                      {activeSelectDropdown === "roleSelect" && (
+                        <div className="member-dropdown">
+                          <div
+                            className={`member-dropdown-item ${selectedRole === "Member" ? "active" : ""}`}
+                            onClick={() => {
+                              setSelectedRole("Member")
+                              setActiveSelectDropdown(null)
+                            }}
+                          >
+                            Member
+                          </div>
+                          <div
+                            className={`member-dropdown-item ${selectedRole === "Admin" ? "active" : ""}`}
+                            onClick={() => {
+                              setSelectedRole("Admin")
+                              setActiveSelectDropdown(null)
+                            }}
+                          >
+                            Admin
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <button className="btn btn-primary text-black">Share</button>
                   </div>
 
-                  {/* Tabs Navigation */}
+                  <div className="create-link-section">
+                    <div className="link-icon-box">
+                      <div className="bx bx-link-alt"></div>
+                    </div>
+                    <div className="link-content">
+                      <div className="link-title">Share with link</div>
+                      <Link href="/" className="text-link">
+                        Create link
+                      </Link>
+                    </div>
+                  </div>
+
                   <ul className="nav nav-tabs border-secondary mb-3" role="tablist">
                     <li className="nav-item" role="presentation">
                       <button
                         className={`nav-link ${
-                          activeTab === "members" ? "active bg-white bg-opacity-10 " : ""
-                        }  border-0`}
+                          activeTab === "members" ? "active bg-white bg-opacity-10" : ""
+                        } border-0`}
                         onClick={() => setActiveTab("members")}
                         role="tab"
                         aria-selected={activeTab === "members"}
@@ -555,7 +692,7 @@ const Navbar = () => {
                     </li>
                     <li className="nav-item" role="presentation">
                       <button
-                        className={`nav-link ${activeTab === "requests" ? "active bg-white bg-opacity-10  " : ""} `}
+                        className={`nav-link ${activeTab === "requests" ? "active bg-white bg-opacity-10" : ""}`}
                         onClick={() => setActiveTab("requests")}
                         role="tab"
                         aria-selected={activeTab === "requests"}
@@ -565,40 +702,127 @@ const Navbar = () => {
                     </li>
                   </ul>
 
-                  {/* Tab Content */}
                   <div className="tab-content">
-                    {/* Board Members Tab */}
                     <div className={`tab-pane fade ${activeTab === "members" ? "show active" : ""}`} role="tabpanel">
                       <div className="member-box mt-3">
-                        <div>
-                          <strong>Aamir Tariq (you)</strong>
-                          <br />
-                          <small>@aamirtariq1 • Workspace admin</small>
+                        <div className="member-info">
+                          <div className="member-avatar">AT</div>
+                          <div className="member-details">
+                            <strong>Aamir Tariq (you)</strong>
+                            <small>@aamirtariq1 • Workspace admin</small>
+                          </div>
                         </div>
-                        <select className="form-select form-select-sm" style={{ width: "auto" }}>
-                          <option>Member</option>
-                          <option>Admin</option>
-                          <option>Remove</option>
-                        </select>
+                        <div className="member-dropdown-wrapper">
+                          <button
+                            className="member-dropdown-btn"
+                            data-member-dropdown="member1"
+                            onClick={(e) => toggleMemberDropdown("member1", e)}
+                          >
+                            Admin
+                            <span className="dropdown-arrow">▼</span>
+                          </button>
+                          {activeMemberDropdown === "member1" && (
+                            <div className="member-dropdown">
+                              <div className="member-dropdown-item" onClick={() => setActiveMemberDropdown(null)}>
+                                Member
+                              </div>
+                              <div
+                                className="member-dropdown-item active"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
+                                Admin
+                              </div>
+                              <div
+                                className="member-dropdown-item remove"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
+                                Remove
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
 
-                      {/* Add more members here */}
                       <div className="member-box mt-3">
-                        <div>
-                          <strong>John Doe</strong>
-                          <br />
-                          <small>@johndoe • Member</small>
+                        <div className="member-info">
+                          <div className="member-avatar">JD</div>
+                          <div className="member-details">
+                            <strong>John Doe</strong>
+                            <small>@johndoe • Member</small>
+                          </div>
                         </div>
-                        <select className="form-select form-select-sm" style={{ width: "auto" }}>
-                          <option>Member</option>
-                          <option>Admin</option>
-                          <option>Remove</option>
-                        </select>
+                        <div className="member-dropdown-wrapper">
+                          <button
+                            className="member-dropdown-btn"
+                            data-member-dropdown="member2"
+                            onClick={(e) => toggleMemberDropdown("member2", e)}
+                          >
+                            Member
+                            <span className="dropdown-arrow">▼</span>
+                          </button>
+                          {activeMemberDropdown === "member2" && (
+                            <div className="member-dropdown">
+                              <div
+                                className="member-dropdown-item active"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
+                                Member
+                              </div>
+                              <div className="member-dropdown-item" onClick={() => setActiveMemberDropdown(null)}>
+                                Admin
+                              </div>
+                              <div
+                                className="member-dropdown-item remove"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
+                                Remove
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="member-box mt-3">
+                        <div className="member-info">
+                          <div className="member-avatar">SW</div>
+                          <div className="member-details">
+                            <strong>Sarah Wilson</strong>
+                            <small>@sarahw • Member</small>
+                          </div>
+                        </div>
+                        <div className="member-dropdown-wrapper">
+                          <button
+                            className="member-dropdown-btn"
+                            data-member-dropdown="member3"
+                            onClick={(e) => toggleMemberDropdown("member3", e)}
+                          >
+                            Member
+                            <span className="dropdown-arrow">▼</span>
+                          </button>
+                          {activeMemberDropdown === "member3" && (
+                            <div className="member-dropdown">
+                              <div
+                                className="member-dropdown-item active"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
+                                Member
+                              </div>
+                              <div className="member-dropdown-item" onClick={() => setActiveMemberDropdown(null)}>
+                                Admin
+                              </div>
+                              <div
+                                className="member-dropdown-item remove"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
+                                Remove
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Join Requests Tab */}
-                    <div className={`tab-pane fade ${activeTab === "requests" ? "show active " : ""}`} role="tabpanel">
+                    <div className={`tab-pane fade ${activeTab === "requests" ? "show active" : ""}`} role="tabpanel">
                       <div className="text-center py-4">
                         <p>No pending join requests</p>
                         <button className="btn btn-sm btn-outline-light mt-2">
@@ -613,140 +837,191 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <div>
-          <div className="dropdown">
-            <HiOutlineDotsHorizontal
-              className="app-nav-icon-dots"
-              data-dropdown="dot"
-              onClick={(e) => toggleDropdown("dot", e)}
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded={activeDropdown === "dot" ? "true" : "false"}
-            />
-            <ul
-              className={`dropdown-menu dropdown-menu-end dropdown-card ${activeDropdown === "dot" ? "show" : ""}`}
-              aria-labelledby="dropdownMenuButton"
-              style={{
-                position: "absolute",
-                inset: "0px auto auto 0px",
-                margin: "0px",
-                transform: "translate(-220px, 40px)",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <li>
-                <a className="dropdown-item" href="/">
-                  <div className="dropdown-avatar">AT</div>
-                  Profile
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-bell"></i>
-                  Notifications
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-bolt-circle"></i>
-                  Power-Ups
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-star"></i>
-                  Favorites
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-info-circle"></i>
-                  Info
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-log-out"></i>
-                  Log out
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-cog"></i> Settings
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-palette"></i> Change background
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-upload"></i> Upgrade
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-file"></i> Start free trial
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-rocket"></i> Automation
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-puzzle"></i> Power-Ups
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-label"></i> Labels
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-sticker"></i> Stickers
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-template"></i> Make template
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-list-check"></i> Activity
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-archive"></i> Archived items
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-show"></i> Watch
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-copy-alt"></i> Copy board
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-mail-send"></i> Email-to-board
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/">
-                  <i className="bx bx-window-close"></i> Close board
-                </a>
-              </li>
-            </ul>
-          </div>
+
+        <div className="nav-icon-wrapper">
+          <HiOutlineDotsHorizontal
+            className="app-nav-icon-dots"
+            data-dropdown="dot"
+            onClick={(e) => toggleDropdown("dot", e)}
+            id="dropdownMenuButton"
+            data-bs-toggle="dropdown"
+            aria-expanded={activeDropdown === "dot" ? "true" : "false"}
+          />
+          <ul
+            className={`dropdown-menu dropdown-menu-end dropdown-card ${activeDropdown === "dot" ? "show" : ""}`}
+            aria-labelledby="dropdownMenuButton"
+            style={{
+              position: "absolute",
+              inset: "0px auto auto 0px",
+              margin: "0px",
+              transform: "translate(-220px, 40px)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <li>
+              <a className="dropdown-item" href="/">
+                <div className="dropdown-avatar">AT</div>
+                Profile
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-bell"></i>
+                Notifications
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-bolt-circle"></i>
+                Power-Ups
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-star"></i>
+                Favorites
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-info-circle"></i>
+                Info
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-log-out"></i>
+                Log out
+              </a>
+            </li>
+            <li>
+              <div className="dropdown-item" style={{ cursor: "pointer", position: "relative" }}>
+                <i className="bx bx-palette"></i> Change background
+                <span
+                  className="dropdown-arrow ms-auto"
+                  data-dots-dropdown="background"
+                  onClick={(e) => toggleDotsDropdown("background", e)}
+                >
+                  ▼
+                </span>
+                {activeDotsDropdown === "background" && (
+                  <div className="dots-dropdown">
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      Default
+                    </div>
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      Blue Theme
+                    </div>
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      Green Theme
+                    </div>
+                  </div>
+                )}
+              </div>
+            </li>
+            <li>
+              <div className="dropdown-item" style={{ cursor: "pointer", position: "relative" }}>
+                <i className="bx bx-rocket"></i> Automation
+                <span
+                  className="dropdown-arrow ms-auto"
+                  data-dots-dropdown="automation"
+                  onClick={(e) => toggleDotsDropdown("automation", e)}
+                >
+                  ▼
+                </span>
+                {activeDotsDropdown === "automation" && (
+                  <div className="dots-dropdown">
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      Rules
+                    </div>
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      Buttons
+                    </div>
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      Calendar
+                    </div>
+                  </div>
+                )}
+              </div>
+            </li>
+            <li>
+              <div className="dropdown-item" style={{ cursor: "pointer", position: "relative" }}>
+                <i className="bx bx-label"></i> Labels
+                <span
+                  className="dropdown-arrow ms-auto"
+                  data-dots-dropdown="labels"
+                  onClick={(e) => toggleDotsDropdown("labels", e)}
+                >
+                  ▼
+                </span>
+                {activeDotsDropdown === "labels" && (
+                  <div className="dots-dropdown">
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      <span
+                        className="label-color green me-2"
+                        style={{ width: "12px", height: "12px", display: "inline-block" }}
+                      ></span>
+                      Green Label
+                    </div>
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      <span
+                        className="label-color yellow me-2"
+                        style={{ width: "12px", height: "12px", display: "inline-block" }}
+                      ></span>
+                      Yellow Label
+                    </div>
+                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                      <span
+                        className="label-color orange me-2"
+                        style={{ width: "12px", height: "12px", display: "inline-block" }}
+                      ></span>
+                      Orange Label
+                    </div>
+                  </div>
+                )}
+              </div>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-sticker"></i> Stickers
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-template"></i> Make template
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-list-check"></i> Activity
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-archive"></i> Archived items
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-show"></i> Watch
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-copy-alt"></i> Copy board
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-mail-send"></i> Email-to-board
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="/">
+                <i className="bx bx-window-close"></i> Close board
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>

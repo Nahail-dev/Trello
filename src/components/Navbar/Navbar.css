@@ -48,12 +48,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
 }
 
-.app-nav-icon-dots:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-}
+
 
 .app-nav-btn {
   background-color: #1f2345;
@@ -84,17 +81,15 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-
   position: relative;
 }
 
-.nav-icon-wrapper {
+.nav-icon-wrapper,
+.nav-icon-dots {
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
   border-radius: 4px;
+  padding: 4px; /* Added padding to make hover area bigger */
 }
 
 .nav-icon-wrapper:hover {
@@ -123,6 +118,7 @@ body {
   opacity: 1;
   visibility: visible;
 }
+
 .app-navbar-right {
   display: flex;
   align-items: center;
@@ -272,7 +268,6 @@ h2 {
   position: absolute;
   top: 10px;
   right: 10px;
-
   cursor: pointer;
   z-index: 10;
 }
@@ -371,7 +366,6 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   position: relative;
 }
 
@@ -471,7 +465,7 @@ h2 {
   background: transparent;
 }
 
-/* Menu  dropdown*/
+/* Menu dropdown */
 .card-popup {
   position: absolute;
   top: 100%;
@@ -500,16 +494,15 @@ h2 {
   color: #ffc107;
 }
 
-/*custom modal */
+/* Custom Modal */
 .custom-modal-content {
-  background-color: #282e33 !important;
-  color: white;
+  background-color: #2b3136 !important;
   border-radius: 10px;
-  border: none;
+  border: 1px solid #3c3e4a !important;
 }
 .custom-input {
-  background-color: #22272b !important;
-  border: 1px solid #3c3e4a !important;
+  background-color: #2b3136 !important;
+  border: 2px solid #3c3e4a !important;
   color: white !important;
   font-size: 14px;
   height: 38px;
@@ -517,6 +510,7 @@ h2 {
 .custom-input::placeholder {
   color: #9ca0b0 !important;
 }
+
 .custom-input:focus {
   border: 1px solid #85b8ff !important;
   background-color: #22272b !important;
@@ -531,21 +525,61 @@ h2 {
   height: 38px;
 }
 .custom-select:focus {
-  background-color: #1f212d !important;
+  background-color: #374bc064 !important;
   border: none !important;
   box-shadow: none !important;
   color: white !important;
 }
 
 .member-box {
-  padding: 12px 16px;
-  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
-  color: #d0d3e0;
+  padding: 0.5rem; /* reduced padding for tighter spacing */
+  border-radius: 4px;
+  margin-bottom: 0.25rem; /* reduced margin for tighter spacing */
 }
+
+/* added member info container with avatar */
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.member-avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #fa9d2c;
+  color: #222;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.member-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem; /* reduced gap between name and description */
+}
+
+.member-box strong {
+  color: #e1e1e2;
+  display: block;
+  margin-bottom: 0; /* removed margin for tighter spacing */
+  line-height: 1.2;
+}
+
+.member-box small {
+  color: #9fadbc;
+  font-size: 0.75rem; /* slightly smaller font size */
+  line-height: 1.2;
+}
+
 /* Share Modal Styles */
 .modal-backdrop {
   background-color: rgba(0, 0, 0, 0.5);
@@ -571,27 +605,27 @@ h2 {
 }
 
 .modal-body {
-  padding: 1rem;
+  padding: 0.75rem; /* reduced padding from 1rem to 0.75rem */
 }
 
 /* Tabs Styling */
 .nav-tabs {
   border-bottom: 1px solid #444;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem; /* reduced margin from 1rem to 0.75rem */
   padding: 0 0.5rem;
 }
 
 .nav-tabs .nav-link {
   color: #9fadbc;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.375rem 0.75rem; /* reduced padding from 0.5rem 1rem to 0.375rem 0.75rem */
   margin-right: 0.5rem;
   border-radius: 4px 4px 0 0;
   transition: all 0.2s ease;
 }
 
 .nav-tabs .nav-link:hover {
-  color: #9fadbc;
+  color: #9fadbc !important;
   background-color: rgba(255, 255, 255, 0.1);
   border-color: transparent;
 }
@@ -601,33 +635,6 @@ h2 {
   background-color: rgba(0, 121, 191, 0.2);
   border: none;
   font-weight: 500;
-}
-
-/* Member Box Styling */
-.member-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
-  transition: background-color 0.2s ease;
-}
-
-.member-box:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.member-box strong {
-  color: #e1e1e2;
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-.member-box small {
-  color: #9fadbc;
-  font-size: 0.8rem;
 }
 
 /* Form Elements */
@@ -800,15 +807,186 @@ h2 {
 }
 
 .form-select {
-  background-color: rgba(255, 255, 255, 0.256) !important;
   color: #fff !important;
-}
-.form-select option {
-  color: #fff !important;
-  background-color: #22272b !important;
+  background-color: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0) !important;
 }
 
-.card-popup, .dropdown-card, .profile-popup {
+.card-popup,
+.dropdown-card,
+.profile-popup {
   z-index: 1000 !important;
   position: absolute !important;
+}
+
+.form-control {
+  border: 2px solid #3c3e4a !important;
+}
+
+form-select:active {
+  background-color: rgba(255, 255, 255, 0) !important;
+}
+
+/* Member Dropdown Functionality */
+.member-dropdown-wrapper {
+  position: relative;
+}
+
+.member-dropdown-btn {
+  background-color: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.member-dropdown-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.member-dropdown-btn[data-member-dropdown] .dropdown-arrow {
+  transform: rotate(0deg);
+}
+
+.member-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #22272b;
+  border: 1px solid #444;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1050;
+  min-width: 120px;
+  margin-top: 4px;
+}
+
+.member-dropdown-item {
+  padding: 8px 12px;
+  color: #9fadbc;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #333;
+}
+
+.member-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.member-dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.member-dropdown-item.active {
+  background-color: rgba(0, 121, 191, 0.2);
+  color: #85b8ff;
+}
+
+.member-dropdown-item.remove {
+  color: #ff6b6b;
+}
+
+.member-dropdown-item.remove:hover {
+  background-color: rgba(255, 107, 107, 0.1);
+  color: #ff8a8a;
+}
+
+/* Dots Dropdown Functionality */
+.dots-dropdown {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background-color: #22272b;
+  border: 1px solid #444;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1060;
+  min-width: 140px;
+  margin-left: 8px;
+}
+
+.dropdown-item .dropdown-arrow {
+  font-size: 10px;
+  color: #9fadbc;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.dropdown-item .dropdown-arrow:hover {
+  color: #fff;
+}
+
+.dropdown-item {
+  position: relative;
+}
+
+/* Added styles for the new create link section with icon box */
+.create-link-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.link-icon-box {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(133, 184, 255, 0.2);
+  border: 1px solid rgba(133, 184, 255, 0.3);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.link-icon-box .bx {
+  font-size: 20px;
+  color: #85b8ff;
+}
+
+.link-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.link-title {
+  color: #e1e1e2;
+  font-weight: 500;
+  font-size: 14px;
+  margin: 0;
+}
+
+.link-description {
+  color: #9fadbc;
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.link-content .text-link {
+  color: #85b8ff;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.link-content .text-link:hover {
+  color: #a3c7ff;
 }
