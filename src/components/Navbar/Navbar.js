@@ -1,31 +1,27 @@
-import React, { useState, useEffect, useCallback } from "react";
-import "./Navbar.css";
-import "./MenuDropdown.css";
-import { BiSolidPlaneAlt, BiGroup } from "react-icons/bi";
-import { PiWrench } from "react-icons/pi";
-import { IoMdMenu, IoMdClose } from "react-icons/io";
-import { MdOutlineStarBorder, MdDashboard } from "react-icons/md";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { IoPerson } from "react-icons/io5";
+"use client"
 
-import viewOptions from "../../content/viewOptions.json";
+import { useState, useEffect, useCallback } from "react"
+import "./Navbar.css"
+import "./MenuDropdown.css"
+import { BiSolidPlaneAlt, BiGroup } from "react-icons/bi"
+import { PiWrench } from "react-icons/pi"
+import { IoMdMenu, IoMdClose } from "react-icons/io"
+import { MdOutlineStarBorder, MdDashboard } from "react-icons/md"
+import { HiOutlineDotsHorizontal } from "react-icons/hi"
+import { IoPerson } from "react-icons/io5"
 
-import {
-  FaTable,
-  FaRegCalendarAlt,
-  FaAlgolia,
-  FaMapMarkerAlt,
-  FaLock,
-} from "react-icons/fa";
-import { RiBook2Fill } from "react-icons/ri";
-import { GiConsoleController } from "react-icons/gi";
-import { IoMailOutline } from "react-icons/io5";
-import { MdLabelImportantOutline } from "react-icons/md";
-import Dropdown from "../Dropdown/Dropdown";
-import { Link, NavLink } from "react-router-dom";
-import { MdOutlineFeedback } from "react-icons/md";
-import { RiStarSFill } from "react-icons/ri";
-import { MdLockOutline } from "react-icons/md";
+import viewOptions from "../../content/viewOptions.json"
+
+import { FaTable, FaRegCalendarAlt, FaAlgolia, FaMapMarkerAlt, FaLock } from "react-icons/fa"
+import { RiBook2Fill } from "react-icons/ri"
+import { GiConsoleController } from "react-icons/gi"
+import { IoMailOutline } from "react-icons/io5"
+import { MdLabelImportantOutline } from "react-icons/md"
+import Dropdown from "../Dropdown/Dropdown"
+import { Link, NavLink } from "react-router-dom"
+import { MdOutlineFeedback } from "react-icons/md"
+import { RiStarSFill } from "react-icons/ri"
+import { MdLockOutline } from "react-icons/md"
 
 const iconMap = {
   FaTable,
@@ -39,93 +35,76 @@ const iconMap = {
   IoMailOutline,
   MdOutlineFeedback,
   IoMdClose,
-};
+}
 
 const Navbar = () => {
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const [activeTab, setActiveTab] = useState("members");
+  const [activeDropdown, setActiveDropdown] = useState(null)
+  const [activeTab, setActiveTab] = useState("members")
 
-  const toggleDropdown = useCallback(
-    (dropdownName, e) => {
-      if (e) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-      setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
-    },
-    [activeDropdown]
-  );
+  /**
+   * Toggle dropdown safely using functional state update
+   * This ensures only one dropdown is active at a time
+   */
+  const toggleDropdown = useCallback((dropdownName, e) => {
+    if (e) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+    setActiveDropdown((prev) => {
+      if (prev === dropdownName) return null
+      return dropdownName
+    })
+  }, [])
 
-  // Handle clicks outside dropdowns and modals
+  /**
+   * Handle outside click and Escape key to close dropdowns
+   */
   useEffect(() => {
+    if (!activeDropdown) return
+
     const handleClickOutside = (event) => {
-      // Don't do anything if no dropdown is open
-      if (!activeDropdown) return;
-      
-      // Check if click is on a dropdown toggle or inside a dropdown
-      const isDropdownToggle = event.target.closest(`[data-dropdown]`);
-      const isInsideDropdown = event.target.closest(`.dropdown-content, .menu-dropdown, .card-popup`);
-      
-      // If click is on a different dropdown toggle, close current and open new one
-      if (isDropdownToggle) {
-        const dropdownName = isDropdownToggle.getAttribute('data-dropdown');
-        if (dropdownName !== activeDropdown) {
-          setActiveDropdown(dropdownName);
-        } else {
-          setActiveDropdown(null);
-        }
-        return;
-      }
-      
-      // If click is not inside any dropdown, close the active one
-      if (!isInsideDropdown) {
-        setActiveDropdown(null);
-      }
-    };
+      const isInside = event.target.closest(
+        `.dropdown-card, 
+         .card-popup, 
+         .menu-dropdown, 
+         .profile-popup, 
+         .app-dropdown-btn,
+         .app-active-link,
+         .modal-content,
+         [data-dropdown="${activeDropdown}"]`,
+      )
 
-    // Handle Escape key
+      if (!isInside) {
+        setActiveDropdown(null)
+      }
+    }
+
     const handleEscape = (e) => {
-      if (e.key === "Escape" && activeDropdown) {
-        setActiveDropdown(null);
+      if (e.key === "Escape") {
+        setActiveDropdown(null)
       }
-    };
+    }
 
-    // Only add event listeners when a dropdown is active
-    if (activeDropdown) {
-      // Prevent body scroll when modal is open
-      if (activeDropdown === "share") {
-        document.body.style.overflow = "hidden";
-      }
+    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("keydown", handleEscape)
 
-      // Use a small timeout to prevent immediate close on open
-      const timer = setTimeout(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleEscape);
-      }, 10);
-
-      return () => {
-        clearTimeout(timer);
-        document.removeEventListener("mousedown", handleClickOutside);
-        document.removeEventListener("keydown", handleEscape);
-        document.body.style.overflow = "";
-      };
+    if (activeDropdown === "share") {
+      document.body.style.overflow = "hidden"
     }
 
     return () => {
-      document.body.style.overflow = "";
-    };
-  }, [activeDropdown]);
+      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("keydown", handleEscape)
+      document.body.style.overflow = ""
+    }
+  }, [activeDropdown])
   return (
     <nav className="app-navbar">
       <div className="app-navbar-left gap-sm-4 gap-2">
         <h2 className="app-logo">Aut eum omnis consec</h2>
 
         <div className="nav-icon-wrapper">
-          <div 
-            className="nav-left-icon" 
-            data-dropdown="menu"
-            onClick={(e) => toggleDropdown("menu", e)}
-          >
+          <div className="nav-left-icon" data-dropdown="menu" onClick={(e) => toggleDropdown("menu", e)}>
             <div className="bx bx-menu-alt-right" />
             <div className="bx bx-chevron-down fs-5" />
           </div>
@@ -141,8 +120,8 @@ const Navbar = () => {
                     className="bx bx-x nav-close-icon"
                     data-dropdown-toggle="menu"
                     onClick={(e) => {
-                      e.stopPropagation();
-                      toggleDropdown("menu");
+                      e.stopPropagation()
+                      toggleDropdown("menu")
                     }}
                   />
                 </div>
@@ -155,8 +134,8 @@ const Navbar = () => {
                   </div>
                   <ul className="app-d-contentlist">
                     {viewOptions.map((option) => {
-                      const IconLeft = iconMap[option.leftIcon];
-                      const IconRight = iconMap[option.rightIcon];
+                      const IconLeft = iconMap[option.leftIcon]
+                      const IconRight = iconMap[option.rightIcon]
                       return (
                         <li key={option.id} className="app-d-content-item">
                           <div className="app-d-content-left">
@@ -165,20 +144,18 @@ const Navbar = () => {
                           </div>
                           <IconRight className="app-d-icon" />
                         </li>
-                      );
+                      )
                     })}
                   </ul>
                 </div>
               }
               bottom={
                 <div className="app-dropdown-bottom">
-                  <h2 className="app-bottom-title">
-                    See your work in new ways
-                  </h2>
+                  <h2 className="app-bottom-title">See your work in new ways</h2>
                   <div className="app-d-bottom-content">
                     <p>
-                      View key timelines, assignments, data, and more directly
-                      from your Trello board with Trello Premium.
+                      View key timelines, assignments, data, and more directly from your Trello board with Trello
+                      Premium.
                     </p>
                   </div>
                   <button className="app-dropdown-btn">Start free trial</button>
@@ -187,9 +164,7 @@ const Navbar = () => {
                     <NavLink
                       to="/"
                       onClick={() => toggleDropdown("menu")}
-                      className={({ isActive }) =>
-                        isActive ? "app-active-link" : "app-default-link"
-                      }
+                      className={({ isActive }) => (isActive ? "app-active-link" : "app-default-link")}
                     >
                       Learn more about trello premium
                     </NavLink>
@@ -204,38 +179,30 @@ const Navbar = () => {
 
       <div className="app-navbar-right gap-2 gap-sm-4 ">
         <div className="nav-icon-wrapper ">
-          <div
-            className="app-nav-avatar"
-            data-dropdown="profile"
-            onClick={(e) => toggleDropdown("profile", e)}
-          >
+          <div className="app-nav-avatar" data-dropdown="profile" onClick={(e) => toggleDropdown("profile", e)}>
             AT
           </div>
           <span className="app-tool-tip">Profile</span>
           {activeDropdown === "profile" && (
-            <>
-              <div className="profile-popup ">
-                <div className="profile-header">
-                  <div
-                    className="bx bx-x profile-close text-black"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveDropdown(null);
-                    }}
-                  />
-                  <div className="profile-avatar">AT</div>
-                  <div className="profile-user-info">
-                    <div className="profile-name">Aamir Tariq</div>
-                    <div className="profile-username">@aamirtariq1</div>
-                  </div>
-                </div>
-                <div className="profile-option">Edit profile info</div>
-                <hr className="profile-divider" />
-                <div className="profile-option">
-                  View member's board activity
+            <div className="profile-popup ">
+              <div className="profile-header">
+                <div
+                  className="bx bx-x profile-close text-black"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setActiveDropdown(null)
+                  }}
+                />
+                <div className="profile-avatar">AT</div>
+                <div className="profile-user-info">
+                  <div className="profile-name">Aamir Tariq</div>
+                  <div className="profile-username">@aamirtariq1</div>
                 </div>
               </div>
-            </>
+              <div className="profile-option">Edit profile info</div>
+              <hr className="profile-divider" />
+              <div className="profile-option">View member's board activity</div>
+            </div>
           )}
         </div>
 
@@ -255,23 +222,16 @@ const Navbar = () => {
                   <div
                     className="bx bx-x profile-close text-white"
                     onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveDropdown(null);
+                      e.stopPropagation()
+                      setActiveDropdown(null)
                     }}
                   />
                 </div>
               }
               content={
                 <div className="ups-dropdown-content">
-                  <img
-                    src="/powers-img.jpg"
-                    alt="Power-Ups"
-                    className="ups-dropdown-img"
-                  />
-                  <p>
-                    Bring additional features to your boards and integrate app
-                    like Google Drive, Slack, and more.
-                  </p>
+                  <img src="/powers-img.jpg" alt="Power-Ups" className="ups-dropdown-img" />
+                  <p>Bring additional features to your boards and integrate app like Google Drive, Slack, and more.</p>
                 </div>
               }
               bottom={
@@ -299,8 +259,8 @@ const Navbar = () => {
                 <span
                   className="close-btn"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveDropdown(null);
+                    e.stopPropagation()
+                    setActiveDropdown(null)
                   }}
                 >
                   ×
@@ -341,24 +301,20 @@ const Navbar = () => {
         </div>
 
         <div className="nav-icon-wrapper d-md-block d-none">
-          <div
-            className="app-nav-icon"
-            data-dropdown="newmenu"
-            onClick={(e) => toggleDropdown("newmenu", e)}
-          >
+          <div className="app-nav-icon" data-dropdown="newmenu" onClick={(e) => toggleDropdown("newmenu", e)}>
             <IoMdMenu />
             <span className="app-tool-tip">Menu</span>
           </div>
 
           {activeDropdown === "newmenu" && (
-            <div className="menu-dropdown" >
+            <div className="menu-dropdown">
               <div className="menu-header mt-4">
                 <h6 className="menu-title">Filter</h6>
                 <button
                   className="newmenue-close-btn"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveDropdown(null);
+                    e.stopPropagation()
+                    setActiveDropdown(null)
                   }}
                   aria-label="Close menu"
                 >
@@ -369,14 +325,8 @@ const Navbar = () => {
               <div className="menu-content">
                 <div className="menu-section">
                   <label className="menu-label mb-2">Keyword</label>
-                  <input
-                    type="text"
-                    placeholder="Enter a keyword..."
-                    className="menu-input"
-                  />
-                  <small className="menu-hint">
-                    Search cards, members, labels, and more.
-                  </small>
+                  <input type="text" placeholder="Enter a keyword..." className="menu-input" />
+                  <small className="menu-hint">Search cards, members, labels, and more.</small>
                 </div>
 
                 <div className="menu-section">
@@ -458,12 +408,11 @@ const Navbar = () => {
               <div className="card-popup" id="popup-star">
                 <div className="d-flex justify-content-between align-items-center border-0">
                   <h6 className="upgrade-title m-0 mx-auto mt-2">Favorites</h6>
-                  <IoMdClose 
+                  <IoMdClose
                     onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveDropdown(null);
+                      e.stopPropagation()
+                      setActiveDropdown(null)
                     }}
-                    style={{ cursor: 'pointer' }}
                   />
                 </div>
                 <p>Starred boards and items will appear here.</p>
@@ -491,10 +440,8 @@ const Navbar = () => {
             <div>
               <div className="card-popup" id="popup-visibility">
                 <div className="d-flex justify-content-between align-items-center mb-2">
-                  <h6 className="upgrade-title mx-auto text-secondary ">
-                    Change visibility
-                  </h6>
-                  <div className="bx bx-x" />
+                  <h6 className="upgrade-title mx-auto text-secondary ">Change visibility</h6>
+                  <div className="bx bx-x fs-5" />
                 </div>
                 <p className="">
                   <MdLockOutline className="me-1" />
@@ -526,11 +473,7 @@ const Navbar = () => {
         </div>
 
         <div className=" d-md-block d-none">
-          <button
-            className="app-nav-btn"
-            data-dropdown="share"
-            onClick={(e) => toggleDropdown("share", e)}
-          >
+          <button className="app-nav-btn" data-dropdown="share" onClick={(e) => toggleDropdown("share", e)}>
             Share
           </button>
 
@@ -548,68 +491,43 @@ const Navbar = () => {
                 zIndex: 1040,
               }}
               onClick={(e) => {
-                e.stopPropagation();
-                setActiveDropdown(null);
+                if (e.target === e.currentTarget) {
+                  setActiveDropdown(null)
+                }
               }}
             ></div>
           )}
 
           {/* Modal */}
-          <div
-            className={`modal ${activeDropdown === "share" ? "show d-block" : "d-none"}`}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 1050,
-              overflow: "auto",
-              outline: 0,
-            }}
-            tabIndex="-1"
-            role="dialog"
-            aria-hidden={activeDropdown !== "share"}
-            onClick={(e) => {
-              e.stopPropagation();
-              setActiveDropdown(null);
-            }}
-          >
+          <div className={`modal ${activeDropdown === "share" ? "show d-block" : "d-none"}`}>
             <div
               className="modal-dialog modal-dialog-centered modal-md"
               role="document"
+              onClick={(e) => e.stopPropagation()}
             >
               <div
                 className="modal-content custom-modal-content"
-                onClick={(e) => e.stopPropagation()}
                 style={{
                   margin: "1.75rem auto",
-                  maxWidth: "500px"
+                  maxWidth: "500px",
                 }}
               >
                 <div className="modal-header border-0">
-                  <h5 className="modal-title text-white">Share board</h5>
+                  <h5 className="modal-title ">Share board</h5>
                   <button
                     type="button"
                     className="btn-close btn-close-white"
                     onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveDropdown(null);
+                      e.stopPropagation()
+                      setActiveDropdown(null)
                     }}
                     aria-label="Close"
                   />
                 </div>
-                <div className="modal-body text-white">
+                <div className="modal-body">
                   <div className="mb-3 d-flex">
-                    <input
-                      type="text"
-                      className="form-control me-2 custom-input"
-                      placeholder="Email address or name"
-                    />
-                    <select
-                      className="form-select custom-select me-2"
-                      style={{ width: "auto" }}
-                    >
+                    <input type="text" className="form-control me-2 custom-input" placeholder="Email address or name" />
+                    <select className="form-select custom-select me-2" style={{ width: "auto" }}>
                       <option>Member</option>
                       <option>Admin</option>
                     </select>
@@ -622,32 +540,22 @@ const Navbar = () => {
                   </div>
 
                   {/* Tabs Navigation */}
-                  <ul
-                    className="nav nav-tabs border-secondary mb-3"
-                    role="tablist"
-                  >
+                  <ul className="nav nav-tabs border-secondary mb-3" role="tablist">
                     <li className="nav-item" role="presentation">
                       <button
                         className={`nav-link ${
-                          activeTab === "members"
-                            ? "active bg-white bg-opacity-10 "
-                            : ""
+                          activeTab === "members" ? "active bg-white bg-opacity-10 " : ""
                         }  border-0`}
                         onClick={() => setActiveTab("members")}
                         role="tab"
                         aria-selected={activeTab === "members"}
                       >
-                        Board members{" "}
-                        <span className="badge bg-secondary">1</span>
+                        Board members <span className="badge bg-secondary">1</span>
                       </button>
                     </li>
                     <li className="nav-item" role="presentation">
                       <button
-                        className={`nav-link ${
-                          activeTab === "requests"
-                            ? "active bg-white bg-opacity-10  "
-                            : ""
-                        } `}
+                        className={`nav-link ${activeTab === "requests" ? "active bg-white bg-opacity-10  " : ""} `}
                         onClick={() => setActiveTab("requests")}
                         role="tab"
                         aria-selected={activeTab === "requests"}
@@ -660,22 +568,14 @@ const Navbar = () => {
                   {/* Tab Content */}
                   <div className="tab-content">
                     {/* Board Members Tab */}
-                    <div
-                      className={`tab-pane fade ${
-                        activeTab === "members" ? "show active" : ""
-                      }`}
-                      role="tabpanel"
-                    >
+                    <div className={`tab-pane fade ${activeTab === "members" ? "show active" : ""}`} role="tabpanel">
                       <div className="member-box mt-3">
                         <div>
                           <strong>Aamir Tariq (you)</strong>
                           <br />
                           <small>@aamirtariq1 • Workspace admin</small>
                         </div>
-                        <select
-                          className="form-select form-select-sm"
-                          style={{ width: "auto" }}
-                        >
+                        <select className="form-select form-select-sm" style={{ width: "auto" }}>
                           <option>Member</option>
                           <option>Admin</option>
                           <option>Remove</option>
@@ -689,10 +589,7 @@ const Navbar = () => {
                           <br />
                           <small>@johndoe • Member</small>
                         </div>
-                        <select
-                          className="form-select form-select-sm"
-                          style={{ width: "auto" }}
-                        >
+                        <select className="form-select form-select-sm" style={{ width: "auto" }}>
                           <option>Member</option>
                           <option>Admin</option>
                           <option>Remove</option>
@@ -701,12 +598,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Join Requests Tab */}
-                    <div
-                      className={`tab-pane fade ${
-                        activeTab === "requests" ? "show active " : ""
-                      }`}
-                      role="tabpanel"
-                    >
+                    <div className={`tab-pane fade ${activeTab === "requests" ? "show active " : ""}`} role="tabpanel">
                       <div className="text-center py-4">
                         <p>No pending join requests</p>
                         <button className="btn btn-sm btn-outline-light mt-2">
@@ -730,12 +622,9 @@ const Navbar = () => {
               id="dropdownMenuButton"
               data-bs-toggle="dropdown"
               aria-expanded={activeDropdown === "dot" ? "true" : "false"}
-              style={{ cursor: "pointer" }}
             />
             <ul
-              className={`dropdown-menu dropdown-menu-end dropdown-card ${
-                activeDropdown === "dot" ? "show" : ""
-              }`}
+              className={`dropdown-menu dropdown-menu-end dropdown-card ${activeDropdown === "dot" ? "show" : ""}`}
               aria-labelledby="dropdownMenuButton"
               style={{
                 position: "absolute",
@@ -743,6 +632,7 @@ const Navbar = () => {
                 margin: "0px",
                 transform: "translate(-220px, 40px)",
               }}
+              onClick={(e) => e.stopPropagation()}
             >
               <li>
                 <a className="dropdown-item" href="/">
@@ -860,7 +750,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

@@ -807,3 +807,8 @@ h2 {
   color: #fff !important;
   background-color: #22272b !important;
 }
+
+.card-popup, .dropdown-card, .profile-popup {
+  z-index: 1000 !important;
+  position: absolute !important;
+}

@@ -9,11 +9,25 @@
   margin: 0;
   padding-bottom: 20px;
 }
+
+/* Modified cards-row for horizontal scroll snap functionality */
 .trello-cards .cards-row {
   display: flex;
   gap: 20px;
-  padding: 10px 0;
+  padding: 10px 20px;
   box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  width: 100%;
+}
+
+/* Hide scrollbar for webkit browsers */
+.trello-cards .cards-row::-webkit-scrollbar {
+  display: none;
 }
 
 .card-container {
@@ -31,6 +45,16 @@
   flex-direction: column;
   overflow: hidden;
   margin-bottom: 15px; /* Add space above scrollbar */
+  /* Added scroll snap alignment */
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.trello-cards .cards-row {
+  display: flex;
+  gap: 20px;
+  padding: 10px 0;
+  box-sizing: border-box;
 }
 
 .trello-cards .card-header {
@@ -174,6 +198,7 @@
   background-color: #a6c5e229;
   color: white !important;
 }
+
 .trello-cards .card-container-repeat .horizontaldotsrepeat {
   padding: 0px 8px;
   border-radius: 6px;
@@ -214,7 +239,11 @@
   min-width: 300px;
   height: fit-content;
   position: relative;
+  /* Added scroll snap alignment */
+  scroll-snap-align: start;
+  flex-shrink: 0;
 }
+
 .trello-cards .cardthree {
   background-color: #dadcf0;
   padding: 12px 13px;
@@ -227,16 +256,19 @@
   align-items: center;
   height: fit-content;
   position: relative;
+  /* Added scroll snap alignment */
+  scroll-snap-align: start;
+  flex-shrink: 0;
 }
-.trello-cards .cardthree:hover {
-  background-color: #b7bcf2;
-}
+
 .trello-cards .title {
   color: #b6c2cf;
 }
+
 .trello-cards .threedots {
   color: #b6c2cf;
 }
+
 .trello-cards .card-inputtwo {
   width: 100%;
   padding: 5px 8px;
@@ -249,6 +281,7 @@
   outline: none;
   transition: border-color 0.3s ease;
 }
+
 .trello-cards .card-inputtwo:hover {
   border: 2px solid white;
 }
@@ -256,6 +289,7 @@
 .trello-cards .card-inputtwo:focus {
   background-color: #22272b;
 }
+
 .trello-cards .card-inputthree {
   width: 100%;
   padding: 5px 8px;
@@ -268,9 +302,11 @@
   outline: none;
   transition: border-color 0.3s ease;
 }
+
 .trello-cards .card-inputthree:hover {
   border: 2px solid white;
 }
+
 .trello-cards .textarea:hover {
   border: 2px solid #4a9bfa !important;
 }
@@ -278,9 +314,11 @@
 .trello-cards .card-inputthree:focus {
   background-color: #22272b;
 }
+
 .doing {
   color: #b6c2cf;
 }
+
 .trello-cards .add-card-btntwo {
   background-color: #4a9bfa;
   color: black;
@@ -322,6 +360,7 @@
   color: #a6c5e2;
   margin-right: 8px;
 }
+
 .custom-tabs {
   padding: 0.5rem;
   border-radius: 0.75rem;
@@ -333,6 +372,7 @@
   background-color: #1d2125;
   margin: 0 auto;
 }
+
 .trello-nav-tabs {
   position: fixed;
   bottom: 0;
@@ -343,11 +383,10 @@
   background-color: #1d2125;
   padding: 0.5rem 0;
   z-index: 100;
-
 }
 
 .custom-tabs .nav-link {
-  color: #9fadbc; 
+  color: #9fadbc;
   background-color: transparent;
   border: none;
   border-radius: 0.5rem;
@@ -387,6 +426,37 @@
   font-weight: 600;
 }
 
+/* Enhanced mobile responsiveness for horizontal scrolling */
+/* Tablet-specific styling for two cards per scroll */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .trello-cards .cards-row {
+    padding: 10px 20px;
+    gap: 20px;
+  }
+
+  .trello-cards .card-container,
+  .trello-cards .cardtwo,
+  .trello-cards .cardthree {
+    width: calc(50vw - 40px);
+    min-width: calc(50vw - 40px);
+  }
+}
+
+/* Updated mobile breakpoint to apply below 600px for single card scroll */
+@media (max-width: 599px) {
+  .trello-cards .cards-row {
+    padding: 10px 15px;
+    gap: 15px;
+  }
+
+  .trello-cards .card-container,
+  .trello-cards .cardtwo,
+  .trello-cards .cardthree {
+    width: calc(100vw - 60px);
+    min-width: calc(100vw - 60px);
+  }
+}
+
 @media (max-width: 509px) {
   .trello-cards .card-header {
     padding: 12px 10px;
@@ -394,9 +464,15 @@
   }
 
   .trello-cards .card-container {
-    width: 280px;
-    min-width: 280px;
+    width: calc(100vw - 40px);
+    min-width: calc(100vw - 40px);
     height: 400px;
+  }
+
+  .trello-cards .cardtwo,
+  .trello-cards .cardthree {
+    width: calc(100vw - 40px);
+    min-width: calc(100vw - 40px);
   }
 
   .trello-cards .card-body {
@@ -417,10 +493,10 @@
   }
 
   .trello-cards .cards-row {
-    padding-bottom: 20px; /* Ensure space for scrollbar */
+    padding: 10px;
+    gap: 10px;
   }
 
-  /* Tab styles for 509px breakpoint */
   .custom-tabs {
     padding: 0.3rem;
     border-radius: 0.5rem;
@@ -442,43 +518,42 @@
   .custom-tabs .nav-link .nav-icon {
     font-size: 16px;
   }
+}
 
-  /* Additional styles for screens smaller than 465px */
-  @media (max-width: 465px) {
-    .custom-tabs {
-      padding: 0.1rem;
-      white-space: nowrap;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Hide scrollbar for Firefox */
-    }
+@media (max-width: 465px) {
+  .custom-tabs {
+    padding: 0.1rem;
+    white-space: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+  }
 
-    .custom-tabs::-webkit-scrollbar {
-      display: none; /* Hide scrollbar for Chrome/Safari */
-    }
+  .custom-tabs::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome/Safari */
+  }
 
-    .custom-tabs .nav-link {
-      padding: 0.2rem 0.3rem;
-      font-size: 11px;
-      white-space: nowrap;
-    }
+  .custom-tabs .nav-link {
+    padding: 0.2rem 0.3rem;
+    font-size: 11px;
+    white-space: nowrap;
+  }
 
-    .custom-tabs .nav-link .nav-icon {
-      font-size: 12px;
-      margin-right: 2px;
-    }
+  .custom-tabs .nav-link .nav-icon {
+    font-size: 12px;
+    margin-right: 2px;
+  }
 
-    .custom-tabs .nav-item:first-child .nav-link {
-      margin-left: 0.1rem;
-    }
+  .custom-tabs .nav-item:first-child .nav-link {
+    margin-left: 0.1rem;
+  }
 
-    .custom-tabs .nav-item:nth-last-child(2) {
-      margin-right: 0.1rem;
-    }
+  .custom-tabs .nav-item:nth-last-child(2) {
+    margin-right: 0.1rem;
+  }
 
-    .custom-tabs .nav-item {
-      flex-shrink: 0;
-    }
+  .custom-tabs .nav-item {
+    flex-shrink: 0;
   }
 }
 
@@ -490,6 +565,7 @@
   background-color: #0c66e4b3;
   color: #0c66e4;
 }
+
 .custom-tabs .nav-link.active:hover .nav-icon {
   color: #0c66e4;
 }
@@ -498,6 +574,7 @@
   background-color: #2b2d31;
   color: #9fadbc;
 }
+
 .custom-tabs .nav-link:hover .nav-icon {
   color: #9fadbc;
 }
