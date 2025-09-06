@@ -670,7 +670,7 @@ const Navbar = () => {
                       <div className="bx bx-link-alt"></div>
                     </div>
                     <div className="link-content">
-                      <div className="link-title">Share with link</div>
+                      <div className="link-title">Share this board with a link</div>
                       <Link href="/" className="text-link">
                         Create link
                       </Link>
