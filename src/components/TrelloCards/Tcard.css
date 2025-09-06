@@ -588,3 +588,8 @@
 .custom-tabs .nav-link:not(.active) .nav-icon {
   color: #9fadbc;
 }
+
+.cardthree:hover{
+  cursor: pointer;
+  background-color: #c3c4ff; 
+}

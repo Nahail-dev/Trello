@@ -68,7 +68,7 @@ function Tcard() {
             </div>
 
             {/* Second card */}
-            <div className="cardtwo">
+            <div className="cardtwo ">
               <div className="d-flex justify-content-between mb-4">
                 <p className="mb-0 title">Title</p>
                 <i
@@ -100,7 +100,7 @@ function Tcard() {
 
             {/* Third + more */}
             {[1, 2, 3].map((item, index) => (
-              <div className="cardthree" key={index}>
+              <div className="cardthree " key={index}>
                 <i className="bx bx-plus me-1" style={{ fontSize: 18 }} />
                 <h5 className="mb-0" style={{ fontSize: 15 }}>
                   Add another list
