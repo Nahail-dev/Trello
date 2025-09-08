@@ -798,9 +798,6 @@ h2 {
 
 @media (max-width: 731px) {
   .nav-icon-wrapper {
-    min-width: 32px;
-    width: 32px;
-    height: 32px;
     margin: 0;
     padding: 0;
     flex-shrink: 0;
