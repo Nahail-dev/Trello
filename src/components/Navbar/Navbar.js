@@ -1,27 +1,31 @@
-"use client"
+import { useState, useEffect, useCallback } from "react";
+import "./Navbar.css";
+import "./MenuDropdown.css";
+import { BiSolidPlaneAlt, BiGroup } from "react-icons/bi";
+import { PiWrench } from "react-icons/pi";
+import { IoMdMenu, IoMdClose } from "react-icons/io";
+import { MdOutlineStarBorder, MdDashboard } from "react-icons/md";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { IoPerson } from "react-icons/io5";
 
-import { useState, useEffect, useCallback } from "react"
-import "./Navbar.css"
-import "./MenuDropdown.css"
-import { BiSolidPlaneAlt, BiGroup } from "react-icons/bi"
-import { PiWrench } from "react-icons/pi"
-import { IoMdMenu, IoMdClose } from "react-icons/io"
-import { MdOutlineStarBorder, MdDashboard } from "react-icons/md"
-import { HiOutlineDotsHorizontal } from "react-icons/hi"
-import { IoPerson } from "react-icons/io5"
+import viewOptions from "../../content/viewOptions.json";
 
-import viewOptions from "../../content/viewOptions.json"
-
-import { FaTable, FaRegCalendarAlt, FaAlgolia, FaMapMarkerAlt, FaLock } from "react-icons/fa"
-import { RiBook2Fill } from "react-icons/ri"
-import { GiConsoleController } from "react-icons/gi"
-import { IoMailOutline } from "react-icons/io5"
-import { MdLabelImportantOutline } from "react-icons/md"
-import Dropdown from "../Dropdown/Dropdown"
-import { Link, NavLink } from "react-router-dom"
-import { MdOutlineFeedback } from "react-icons/md"
-import { RiStarSFill } from "react-icons/ri"
-import { MdLockOutline } from "react-icons/md"
+import {
+  FaTable,
+  FaRegCalendarAlt,
+  FaAlgolia,
+  FaMapMarkerAlt,
+  FaLock,
+} from "react-icons/fa";
+import { RiBook2Fill } from "react-icons/ri";
+import { GiConsoleController } from "react-icons/gi";
+import { IoMailOutline } from "react-icons/io5";
+import { MdLabelImportantOutline } from "react-icons/md";
+import Dropdown from "../Dropdown/Dropdown";
+import { Link, NavLink } from "react-router-dom";
+import { MdOutlineFeedback } from "react-icons/md";
+import { RiStarSFill } from "react-icons/ri";
+import { MdLockOutline } from "react-icons/md";
 
 const iconMap = {
   FaTable,
@@ -35,112 +39,123 @@ const iconMap = {
   IoMailOutline,
   MdOutlineFeedback,
   IoMdClose,
-}
+};
 
 const Navbar = () => {
-  const [activeDropdown, setActiveDropdown] = useState(null)
-  const [activeTab, setActiveTab] = useState("members")
-  const [activeMemberDropdown, setActiveMemberDropdown] = useState(null)
-  const [activeSelectDropdown, setActiveSelectDropdown] = useState(null)
-  const [selectedRole, setSelectedRole] = useState("Member")
-  const [selectedLabel, setSelectedLabel] = useState("Select labels")
-  const [activeDotsDropdown, setActiveDotsDropdown] = useState(null)
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [activeTab, setActiveTab] = useState("members");
+  const [activeMemberDropdown, setActiveMemberDropdown] = useState(null);
+  const [activeSelectDropdown, setActiveSelectDropdown] = useState(null);
+  const [selectedRole, setSelectedRole] = useState("Member");
+  const [selectedLabel, setSelectedLabel] = useState("Select labels");
+  const [activeDotsDropdown, setActiveDotsDropdown] = useState(null);
 
   const toggleDropdown = useCallback((dropdownName, e) => {
     if (e) {
-      e.stopPropagation()
-      e.preventDefault()
+      e.stopPropagation();
+      e.preventDefault();
     }
     setActiveDropdown((prev) => {
-      if (prev === dropdownName) return null
-      return dropdownName
-    })
-  }, [])
+      if (prev === dropdownName) return null;
+      return dropdownName;
+    });
+  }, []);
 
   const toggleMemberDropdown = useCallback((memberName, e) => {
     if (e) {
-      e.stopPropagation()
-      e.preventDefault()
+      e.stopPropagation();
+      e.preventDefault();
     }
     setActiveMemberDropdown((prev) => {
-      if (prev === memberName) return null
-      return memberName
-    })
-  }, [])
+      if (prev === memberName) return null;
+      return memberName;
+    });
+  }, []);
 
   const toggleSelectDropdown = useCallback((selectName, e) => {
     if (e) {
-      e.stopPropagation()
-      e.preventDefault()
+      e.stopPropagation();
+      e.preventDefault();
     }
     setActiveSelectDropdown((prev) => {
-      if (prev === selectName) return null
-      return selectName
-    })
-  }, [])
+      if (prev === selectName) return null;
+      return selectName;
+    });
+  }, []);
 
   const toggleDotsDropdown = useCallback((dotsName, e) => {
     if (e) {
-      e.stopPropagation()
-      e.preventDefault()
+      e.stopPropagation();
+      e.preventDefault();
     }
     setActiveDotsDropdown((prev) => {
-      if (prev === dotsName) return null
-      return dotsName
-    })
-  }, [])
+      if (prev === dotsName) return null;
+      return dotsName;
+    });
+  }, []);
 
   useEffect(() => {
-    if (!activeDropdown && !activeMemberDropdown && !activeSelectDropdown && !activeDotsDropdown) return
+    if (
+      !activeDropdown &&
+      !activeMemberDropdown &&
+      !activeSelectDropdown &&
+      !activeDotsDropdown
+    )
+      return;
 
     const handleClickOutside = (event) => {
       const isInside = event.target.closest(
         `.dropdown-card, 
-         .card-popup, 
-         .menu-dropdown, 
-         .profile-popup, 
-         .app-dropdown-btn,
-         .app-active-link,
-         .modal-content,
-         .member-dropdown,
-         .select-dropdown,
-         .dots-dropdown,
-         [data-dropdown="${activeDropdown}"],
-         [data-member-dropdown="${activeMemberDropdown}"],
-         [data-select-dropdown="${activeSelectDropdown}"],
-         [data-dots-dropdown="${activeDotsDropdown}"]`,
-      )
+          .card-popup, 
+          .menu-dropdown, 
+          .profile-popup, 
+          .app-dropdown-btn,
+          .app-active-link,
+          .modal-content,
+          .member-dropdown,
+          .select-dropdown,
+          .dots-dropdown,
+          [data-dropdown="${activeDropdown}"],
+          [data-member-dropdown="${activeMemberDropdown}"],
+          [data-select-dropdown="${activeSelectDropdown}"],
+          [data-dots-dropdown="${activeDotsDropdown}"]`
+      );
 
       if (!isInside) {
-        setActiveDropdown(null)
-        setActiveMemberDropdown(null)
-        setActiveSelectDropdown(null)
-        setActiveDotsDropdown(null)
+        setActiveDropdown(null);
+        setActiveMemberDropdown(null);
+        setActiveSelectDropdown(null);
+        setActiveDotsDropdown(null);
       }
-    }
+    };
 
     const handleEscape = (e) => {
       if (e.key === "Escape") {
-        setActiveDropdown(null)
-        setActiveMemberDropdown(null)
-        setActiveSelectDropdown(null)
-        setActiveDotsDropdown(null)
+        setActiveDropdown(null);
+        setActiveMemberDropdown(null);
+        setActiveSelectDropdown(null);
+        setActiveDotsDropdown(null);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
-    document.addEventListener("keydown", handleEscape)
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
 
     if (activeDropdown === "share") {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-      document.removeEventListener("keydown", handleEscape)
-      document.body.style.overflow = ""
-    }
-  }, [activeDropdown, activeMemberDropdown, activeSelectDropdown, activeDotsDropdown])
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "";
+    };
+  }, [
+    activeDropdown,
+    activeMemberDropdown,
+    activeSelectDropdown,
+    activeDotsDropdown,
+  ]);
 
   return (
     <nav className="app-navbar">
@@ -148,7 +163,11 @@ const Navbar = () => {
         <h2 className="app-logo">Aut eum omnis consec</h2>
 
         <div className="nav-icon-wrapper">
-          <div className="nav-left-icon" data-dropdown="menu" onClick={(e) => toggleDropdown("menu", e)}>
+          <div
+            className="nav-left-icon"
+            data-dropdown="menu"
+            onClick={(e) => toggleDropdown("menu", e)}
+          >
             <div className="bx bx-menu-alt-right" />
             <div className="bx bx-chevron-down fs-5" />
           </div>
@@ -164,8 +183,8 @@ const Navbar = () => {
                     className="bx bx-x nav-close-icon"
                     data-dropdown-toggle="menu"
                     onClick={(e) => {
-                      e.stopPropagation()
-                      toggleDropdown("menu")
+                      e.stopPropagation();
+                      toggleDropdown("menu");
                     }}
                   />
                 </div>
@@ -178,8 +197,8 @@ const Navbar = () => {
                   </div>
                   <ul className="app-d-contentlist">
                     {viewOptions.map((option) => {
-                      const IconLeft = iconMap[option.leftIcon]
-                      const IconRight = iconMap[option.rightIcon]
+                      const IconLeft = iconMap[option.leftIcon];
+                      const IconRight = iconMap[option.rightIcon];
                       return (
                         <li key={option.id} className="app-d-content-item">
                           <div className="app-d-content-left">
@@ -188,18 +207,20 @@ const Navbar = () => {
                           </div>
                           <IconRight className="app-d-icon" />
                         </li>
-                      )
+                      );
                     })}
                   </ul>
                 </div>
               }
               bottom={
                 <div className="app-dropdown-bottom">
-                  <h2 className="app-bottom-title">See your work in new ways</h2>
+                  <h2 className="app-bottom-title">
+                    See your work in new ways
+                  </h2>
                   <div className="app-d-bottom-content">
                     <p>
-                      View key timelines, assignments, data, and more directly from your Trello board with Trello
-                      Premium.
+                      View key timelines, assignments, data, and more directly
+                      from your Trello board with Trello Premium.
                     </p>
                   </div>
                   <button className="app-dropdown-btn">Start free trial</button>
@@ -208,7 +229,9 @@ const Navbar = () => {
                     <NavLink
                       to="/"
                       onClick={() => toggleDropdown("menu")}
-                      className={({ isActive }) => (isActive ? "app-active-link" : "app-default-link")}
+                      className={({ isActive }) =>
+                        isActive ? "app-active-link" : "app-default-link"
+                      }
                     >
                       Learn more about trello premium
                     </NavLink>
@@ -223,7 +246,11 @@ const Navbar = () => {
 
       <div className="app-navbar-right gap-2 gap-sm-4">
         <div className="nav-icon-wrapper">
-          <div className="app-nav-avatar" data-dropdown="profile" onClick={(e) => toggleDropdown("profile", e)}>
+          <div
+            className="app-nav-avatar"
+            data-dropdown="profile"
+            onClick={(e) => toggleDropdown("profile", e)}
+          >
             AT
           </div>
           <span className="app-tool-tip">Profile</span>
@@ -233,8 +260,8 @@ const Navbar = () => {
                 <div
                   className="bx bx-x profile-close text-black"
                   onClick={(e) => {
-                    e.stopPropagation()
-                    setActiveDropdown(null)
+                    e.stopPropagation();
+                    setActiveDropdown(null);
                   }}
                 />
                 <div className="profile-avatar">AT</div>
@@ -266,16 +293,23 @@ const Navbar = () => {
                   <div
                     className="bx bx-x profile-close text-white"
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setActiveDropdown(null)
+                      e.stopPropagation();
+                      setActiveDropdown(null);
                     }}
                   />
                 </div>
               }
               content={
                 <div className="ups-dropdown-content">
-                  <img src="/powers-img.jpg" alt="Power-Ups" className="ups-dropdown-img" />
-                  <p>Bring additional features to your boards and integrate app like Google Drive, Slack, and more.</p>
+                  <img
+                    src="/powers-img.jpg"
+                    alt="Power-Ups"
+                    className="ups-dropdown-img"
+                  />
+                  <p>
+                    Bring additional features to your boards and integrate app
+                    like Google Drive, Slack, and more.
+                  </p>
                 </div>
               }
               bottom={
@@ -303,8 +337,8 @@ const Navbar = () => {
                 <span
                   className="close-btn"
                   onClick={(e) => {
-                    e.stopPropagation()
-                    setActiveDropdown(null)
+                    e.stopPropagation();
+                    setActiveDropdown(null);
                   }}
                 >
                   ×
@@ -345,7 +379,11 @@ const Navbar = () => {
         </div>
 
         <div className="nav-icon-wrapper d-md-block d-none">
-          <div className="app-nav-icon" data-dropdown="newmenu" onClick={(e) => toggleDropdown("newmenu", e)}>
+          <div
+            className="app-nav-icon"
+            data-dropdown="newmenu"
+            onClick={(e) => toggleDropdown("newmenu", e)}
+          >
             <IoMdMenu />
             <span className="app-tool-tip">Menu</span>
           </div>
@@ -357,8 +395,8 @@ const Navbar = () => {
                 <button
                   className="newmenue-close-btn"
                   onClick={(e) => {
-                    e.stopPropagation()
-                    setActiveDropdown(null)
+                    e.stopPropagation();
+                    setActiveDropdown(null);
                   }}
                   aria-label="Close menu"
                 >
@@ -369,14 +407,24 @@ const Navbar = () => {
               <div className="menu-content">
                 <div className="menu-section">
                   <label className="menu-label mb-2">Keyword</label>
-                  <input type="text" placeholder="Enter a keyword..." className="menu-input" />
-                  <small className="menu-hint">Search cards, members, labels, and more.</small>
+                  <input
+                    type="text"
+                    placeholder="Enter a keyword..."
+                    className="menu-input"
+                  />
+                  <small className="menu-hint">
+                    Search cards, members, labels, and more.
+                  </small>
                 </div>
 
                 <div className="menu-section">
                   <label className="menu-label">Members</label>
                   <label className="menu-option">
-                    <input type="checkbox" id="noMembers" />
+                    <input
+                      type="checkbox"
+                      id="noMembers"
+                      className="checkbox"
+                    />
                     <span className="menu-icon">
                       <IoPerson />
                     </span>
@@ -419,81 +467,98 @@ const Navbar = () => {
 
                 <div className="menu-section">
                   <label className="menu-label">Labels</label>
+
+                  {/* No labels option */}
                   <label className="menu-option">
-                    <input type="checkbox" id="noLabels" />
+                    <input type="checkbox" />
                     <span className="menu-icon">
                       <MdLabelImportantOutline />
                     </span>
                     <span>No labels</span>
                   </label>
-                  <div className="label-colors">
-                    <div className="label-color green" title="Green" />
-                    <div className="label-color yellow" title="Yellow" />
-                    <div className="label-color orange" title="Orange" />
-                  </div>
-                  <div className="member-dropdown-wrapper">
-                    <button
-                      className="member-dropdown-btn"
-                      data-select-dropdown="labelSelect"
-                      onClick={(e) => toggleSelectDropdown("labelSelect", e)}
-                      style={{ width: "100%", justifyContent: "space-between" }}
+
+                  {/* Green label */}
+                  <label className="menu-option">
+                    <input type="checkbox" />
+                    <span className="label-color green" title="Green"></span>
+                  </label>
+
+                  {/* Yellow label */}
+                  <label className="menu-option">
+                    <input type="checkbox" />
+                    <span className="label-color yellow" title="Yellow"></span>
+                  </label>
+
+                  {/* Orange label */}
+                  <label className="menu-option">
+                    <input type="checkbox" />
+                    <span className="label-color orange" title="Orange"></span>
+                  </label>
+
+                  {/* Dropdown tab with its own checkbox */}
+                  <label className="menu-option">
+                    <input type="checkbox" />
+                    <div
+                      className="member-dropdown-wrapper"
+                      style={{ flex: 1 }}
                     >
-                      {selectedLabel}
-                      <span className="dropdown-arrow">▼</span>
-                    </button>
-                    {activeSelectDropdown === "labelSelect" && (
-                      <div className="member-dropdown" style={{ width: "100%" }}>
-                        <div
-                          className={`member-dropdown-item ${selectedLabel === "Select labels" ? "active" : ""}`}
-                          onClick={() => {
-                            setSelectedLabel("Select labels")
-                            setActiveSelectDropdown(null)
-                          }}
-                        >
-                          Select labels
-                        </div>
-                        <div
-                          className={`member-dropdown-item ${selectedLabel === "Green Label" ? "active" : ""}`}
-                          onClick={() => {
-                            setSelectedLabel("Green Label")
-                            setActiveSelectDropdown(null)
-                          }}
-                        >
+                      <button
+                        type="button"
+                        className="member-dropdown-btn"
+                        data-select-dropdown="labelSelect"
+                        onClick={(e) => toggleSelectDropdown("labelSelect", e)}
+                        style={{
+                          width: "100%",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        {selectedLabel === "Select labels" ? (
+                          "Select labels"
+                        ) : (
                           <span
-                            className="label-color green me-2"
-                            style={{ width: "12px", height: "12px", display: "inline-block" }}
-                          ></span>
-                          Green Label
-                        </div>
+                            className={`label-color ${selectedLabel.toLowerCase()}`}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <span className="dropdown-arrow">▼</span>
+                      </button>
+
+                      {activeSelectDropdown === "labelSelect" && (
                         <div
-                          className={`member-dropdown-item ${selectedLabel === "Yellow Label" ? "active" : ""}`}
-                          onClick={() => {
-                            setSelectedLabel("Yellow Label")
-                            setActiveSelectDropdown(null)
-                          }}
+                          className="member-dropdown swatch-dropdown"
+                          style={{ width: "100%" }}
                         >
-                          <span
-                            className="label-color yellow me-2"
-                            style={{ width: "12px", height: "12px", display: "inline-block" }}
-                          ></span>
-                          Yellow Label
+                          <div
+                            className="swatch-row"
+                            onClick={() => {
+                              setSelectedLabel("Green");
+                              setActiveSelectDropdown(null);
+                            }}
+                          >
+                            <span className="label-color green" />
+                          </div>
+                          <div
+                            className="swatch-row"
+                            onClick={() => {
+                              setSelectedLabel("Yellow");
+                              setActiveSelectDropdown(null);
+                            }}
+                          >
+                            <span className="label-color yellow" />
+                          </div>
+                          <div
+                            className="swatch-row"
+                            onClick={() => {
+                              setSelectedLabel("Orange");
+                              setActiveSelectDropdown(null);
+                            }}
+                          >
+                            <span className="label-color orange" />
+                          </div>
                         </div>
-                        <div
-                          className={`member-dropdown-item ${selectedLabel === "Orange Label" ? "active" : ""}`}
-                          onClick={() => {
-                            setSelectedLabel("Orange Label")
-                            setActiveSelectDropdown(null)
-                          }}
-                        >
-                          <span
-                            className="label-color orange me-2"
-                            style={{ width: "12px", height: "12px", display: "inline-block" }}
-                          ></span>
-                          Orange Label
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  </label>
                 </div>
               </div>
             </div>
@@ -514,8 +579,8 @@ const Navbar = () => {
                   <h6 className="upgrade-title m-0 mx-auto mt-2">Favorites</h6>
                   <IoMdClose
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setActiveDropdown(null)
+                      e.stopPropagation();
+                      setActiveDropdown(null);
                     }}
                   />
                 </div>
@@ -544,7 +609,9 @@ const Navbar = () => {
             <div>
               <div className="card-popup" id="popup-visibility">
                 <div className="d-flex justify-content-between align-items-center mb-2">
-                  <h6 className="upgrade-title mx-auto text-secondary">Change visibility</h6>
+                  <h6 className="upgrade-title mx-auto text-secondary">
+                    Change visibility
+                  </h6>
                   <div className="bx bx-x fs-5" />
                 </div>
                 <p className="">
@@ -577,7 +644,11 @@ const Navbar = () => {
         </div>
 
         <div className="d-md-block d-none">
-          <button className="app-nav-btn" data-dropdown="share" onClick={(e) => toggleDropdown("share", e)}>
+          <button
+            className="app-nav-btn"
+            data-dropdown="share"
+            onClick={(e) => toggleDropdown("share", e)}
+          >
             Share
           </button>
 
@@ -595,13 +666,17 @@ const Navbar = () => {
               }}
               onClick={(e) => {
                 if (e.target === e.currentTarget) {
-                  setActiveDropdown(null)
+                  setActiveDropdown(null);
                 }
               }}
             />
           )}
 
-          <div className={`modal ${activeDropdown === "share" ? "show d-block" : "d-none"}`}>
+          <div
+            className={`modal ${
+              activeDropdown === "share" ? "show d-block" : "d-none"
+            }`}
+          >
             <div
               className="modal-dialog modal-dialog-centered modal-md"
               role="document"
@@ -620,15 +695,19 @@ const Navbar = () => {
                     type="button"
                     className="btn-close btn-close-white"
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setActiveDropdown(null)
+                      e.stopPropagation();
+                      setActiveDropdown(null);
                     }}
                     aria-label="Close"
                   />
                 </div>
                 <div className="modal-body">
                   <div className="mb-3 d-flex">
-                    <input type="text" className="form-control me-2 custom-input" placeholder="Email address or name" />
+                    <input
+                      type="text"
+                      className="form-control me-2 custom-input"
+                      placeholder="Email address or name"
+                    />
                     <div className="member-dropdown-wrapper me-2">
                       <button
                         className="member-dropdown-btn"
@@ -642,19 +721,23 @@ const Navbar = () => {
                       {activeSelectDropdown === "roleSelect" && (
                         <div className="member-dropdown">
                           <div
-                            className={`member-dropdown-item ${selectedRole === "Member" ? "active" : ""}`}
+                            className={`member-dropdown-item ${
+                              selectedRole === "Member" ? "active" : ""
+                            }`}
                             onClick={() => {
-                              setSelectedRole("Member")
-                              setActiveSelectDropdown(null)
+                              setSelectedRole("Member");
+                              setActiveSelectDropdown(null);
                             }}
                           >
                             Member
                           </div>
                           <div
-                            className={`member-dropdown-item ${selectedRole === "Admin" ? "active" : ""}`}
+                            className={`member-dropdown-item ${
+                              selectedRole === "Admin" ? "active" : ""
+                            }`}
                             onClick={() => {
-                              setSelectedRole("Admin")
-                              setActiveSelectDropdown(null)
+                              setSelectedRole("Admin");
+                              setActiveSelectDropdown(null);
                             }}
                           >
                             Admin
@@ -662,7 +745,9 @@ const Navbar = () => {
                         </div>
                       )}
                     </div>
-                    <button className="btn btn-primary text-black">Share</button>
+                    <button className="btn btn-primary text-black">
+                      Share
+                    </button>
                   </div>
 
                   <div className="create-link-section">
@@ -670,29 +755,41 @@ const Navbar = () => {
                       <div className="bx bx-link-alt"></div>
                     </div>
                     <div className="link-content">
-                      <div className="link-title">Share this board with a link</div>
+                      <div className="link-title">
+                        Share this board with a link
+                      </div>
                       <Link href="/" className="text-link">
                         Create link
                       </Link>
                     </div>
                   </div>
 
-                  <ul className="nav nav-tabs border-secondary mb-3" role="tablist">
+                  <ul
+                    className="nav nav-tabs border-secondary mb-3"
+                    role="tablist"
+                  >
                     <li className="nav-item" role="presentation">
                       <button
                         className={`nav-link ${
-                          activeTab === "members" ? "active bg-white bg-opacity-10" : ""
+                          activeTab === "members"
+                            ? "active bg-white bg-opacity-10"
+                            : ""
                         } border-0`}
                         onClick={() => setActiveTab("members")}
                         role="tab"
                         aria-selected={activeTab === "members"}
                       >
-                        Board members <span className="badge bg-secondary">1</span>
+                        Board members{" "}
+                        <span className="badge bg-secondary">1</span>
                       </button>
                     </li>
                     <li className="nav-item" role="presentation">
                       <button
-                        className={`nav-link ${activeTab === "requests" ? "active bg-white bg-opacity-10" : ""}`}
+                        className={`nav-link ${
+                          activeTab === "requests"
+                            ? "active bg-white bg-opacity-10"
+                            : ""
+                        }`}
                         onClick={() => setActiveTab("requests")}
                         role="tab"
                         aria-selected={activeTab === "requests"}
@@ -703,7 +800,12 @@ const Navbar = () => {
                   </ul>
 
                   <div className="tab-content">
-                    <div className={`tab-pane fade ${activeTab === "members" ? "show active" : ""}`} role="tabpanel">
+                    <div
+                      className={`tab-pane fade ${
+                        activeTab === "members" ? "show active" : ""
+                      }`}
+                      role="tabpanel"
+                    >
                       <div className="member-box mt-3">
                         <div className="member-info">
                           <div className="member-avatar">AT</div>
@@ -723,7 +825,10 @@ const Navbar = () => {
                           </button>
                           {activeMemberDropdown === "member1" && (
                             <div className="member-dropdown">
-                              <div className="member-dropdown-item" onClick={() => setActiveMemberDropdown(null)}>
+                              <div
+                                className="member-dropdown-item"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
                                 Member
                               </div>
                               <div
@@ -768,7 +873,10 @@ const Navbar = () => {
                               >
                                 Member
                               </div>
-                              <div className="member-dropdown-item" onClick={() => setActiveMemberDropdown(null)}>
+                              <div
+                                className="member-dropdown-item"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
                                 Admin
                               </div>
                               <div
@@ -807,7 +915,10 @@ const Navbar = () => {
                               >
                                 Member
                               </div>
-                              <div className="member-dropdown-item" onClick={() => setActiveMemberDropdown(null)}>
+                              <div
+                                className="member-dropdown-item"
+                                onClick={() => setActiveMemberDropdown(null)}
+                              >
                                 Admin
                               </div>
                               <div
@@ -822,10 +933,15 @@ const Navbar = () => {
                       </div>
                     </div>
 
-                    <div className={`tab-pane fade ${activeTab === "requests" ? "show active" : ""}`} role="tabpanel">
+                    <div
+                      className={`tab-pane fade ${
+                        activeTab === "requests" ? "show active" : ""
+                      }`}
+                      role="tabpanel"
+                    >
                       <div className="text-center py-4">
                         <p>No pending join requests</p>
-                        <button className="btn btn-sm btn-outline-light mt-2">
+                        <button className="btn btn-sm btn-outline-secondary mt-2">
                           <i className="bi bi-people me-1"></i>
                           Invite members
                         </button>
@@ -848,7 +964,9 @@ const Navbar = () => {
             aria-expanded={activeDropdown === "dot" ? "true" : "false"}
           />
           <ul
-            className={`dropdown-menu dropdown-menu-end dropdown-card ${activeDropdown === "dot" ? "show" : ""}`}
+            className={`dropdown-menu dropdown-menu-end dropdown-card ${
+              activeDropdown === "dot" ? "show" : ""
+            }`}
             aria-labelledby="dropdownMenuButton"
             style={{
               position: "absolute",
@@ -895,7 +1013,10 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <div className="dropdown-item" style={{ cursor: "pointer", position: "relative" }}>
+              <div
+                className="dropdown-item"
+                style={{ cursor: "pointer", position: "relative" }}
+              >
                 <i className="bx bx-palette"></i> Change background
                 <span
                   className="dropdown-arrow ms-auto"
@@ -906,13 +1027,22 @@ const Navbar = () => {
                 </span>
                 {activeDotsDropdown === "background" && (
                   <div className="dots-dropdown">
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       Default
                     </div>
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       Blue Theme
                     </div>
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       Green Theme
                     </div>
                   </div>
@@ -920,7 +1050,10 @@ const Navbar = () => {
               </div>
             </li>
             <li>
-              <div className="dropdown-item" style={{ cursor: "pointer", position: "relative" }}>
+              <div
+                className="dropdown-item"
+                style={{ cursor: "pointer", position: "relative" }}
+              >
                 <i className="bx bx-rocket"></i> Automation
                 <span
                   className="dropdown-arrow ms-auto"
@@ -931,13 +1064,22 @@ const Navbar = () => {
                 </span>
                 {activeDotsDropdown === "automation" && (
                   <div className="dots-dropdown">
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       Rules
                     </div>
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       Buttons
                     </div>
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       Calendar
                     </div>
                   </div>
@@ -945,7 +1087,10 @@ const Navbar = () => {
               </div>
             </li>
             <li>
-              <div className="dropdown-item" style={{ cursor: "pointer", position: "relative" }}>
+              <div
+                className="dropdown-item"
+                style={{ cursor: "pointer", position: "relative" }}
+              >
                 <i className="bx bx-label"></i> Labels
                 <span
                   className="dropdown-arrow ms-auto"
@@ -956,24 +1101,45 @@ const Navbar = () => {
                 </span>
                 {activeDotsDropdown === "labels" && (
                   <div className="dots-dropdown">
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       <span
                         className="label-color green me-2"
-                        style={{ width: "12px", height: "12px", display: "inline-block" }}
+                        style={{
+                          width: "12px",
+                          height: "12px",
+                          display: "inline-block",
+                        }}
                       ></span>
                       Green Label
                     </div>
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       <span
                         className="label-color yellow me-2"
-                        style={{ width: "12px", height: "12px", display: "inline-block" }}
+                        style={{
+                          width: "12px",
+                          height: "12px",
+                          display: "inline-block",
+                        }}
                       ></span>
                       Yellow Label
                     </div>
-                    <div className="member-dropdown-item" onClick={() => setActiveDotsDropdown(null)}>
+                    <div
+                      className="member-dropdown-item"
+                      onClick={() => setActiveDotsDropdown(null)}
+                    >
                       <span
                         className="label-color orange me-2"
-                        style={{ width: "12px", height: "12px", display: "inline-block" }}
+                        style={{
+                          width: "12px",
+                          height: "12px",
+                          display: "inline-block",
+                        }}
                       ></span>
                       Orange Label
                     </div>
@@ -1025,7 +1191,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

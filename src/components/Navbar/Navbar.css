@@ -663,6 +663,9 @@ h2 {
 .btn-primary:hover {
   background-color: #026aa7;
 }
+.btn-outline-secondary:hover{
+  border-color: #9fadbc;
+}
 
 .text-link {
   color: #9fadbc;
