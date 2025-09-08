@@ -426,7 +426,7 @@ const Navbar = () => {
                       className="checkbox"
                     />
                     <span className="menu-icon">
-                      <IoPerson />
+                      <IoPerson className="icon-circle" />
                     </span>
                     <span>No members</span>
                   </label>
@@ -453,15 +453,28 @@ const Navbar = () => {
                   <label className="menu-label">Due date</label>
                   <label className="menu-option">
                     <input type="checkbox" />
+                    <span className="bx bxs-calendar-alt fs-5"></span>
                     <span>No dates</span>
                   </label>
                   <label className="menu-option">
                     <input type="checkbox" />
+                    <span className="bx bxs-time text-danger fs-5"></span>
                     <span>Overdue</span>
                   </label>
                   <label className="menu-option">
                     <input type="checkbox" />
+                    <span className="bx bxs-time text-warning fs-5"></span>
                     <span>Due in the next day</span>
+                  </label>
+                  <label className="menu-option">
+                    <input type="checkbox" />
+                    <span className="bx bxs-time fs-5"></span>
+                    <span>Due in the next week</span>
+                  </label>
+                  <label className="menu-option">
+                    <input type="checkbox" />
+                    <span className="bx bxs-time fs-5"></span>
+                    <span>Due in the next month</span>
                   </label>
                 </div>
 
@@ -472,7 +485,7 @@ const Navbar = () => {
                   <label className="menu-option">
                     <input type="checkbox" />
                     <span className="menu-icon">
-                      <MdLabelImportantOutline />
+                      <MdLabelImportantOutline className="fs-5"/>
                     </span>
                     <span>No labels</span>
                   </label>
@@ -520,7 +533,7 @@ const Navbar = () => {
                             aria-hidden="true"
                           />
                         )}
-                        <span className="dropdown-arrow">▼</span>
+                        <span className="dropdown-arrow bx bx-chevron-down"></span>
                       </button>
 
                       {activeSelectDropdown === "labelSelect" && (
@@ -558,6 +571,29 @@ const Navbar = () => {
                         </div>
                       )}
                     </div>
+                  </label>
+                </div>
+                <div className="menu-section">
+                  <label className="menu-label">Activity</label>
+                  <label className="menu-option">
+                    <input type="checkbox" />
+
+                    <span>Activity in last week</span>
+                  </label>
+                  <label className="menu-option">
+                    <input type="checkbox" />
+
+                    <span>Activity in last two weeks</span>
+                  </label>
+                  <label className="menu-option">
+                    <input type="checkbox" />
+
+                    <span>Activity in last four weeks</span>
+                  </label>
+                  <label className="menu-option">
+                    <input type="checkbox" />
+
+                    <span>Without activity in last four weeks</span>
                   </label>
                 </div>
               </div>
@@ -716,12 +752,13 @@ const Navbar = () => {
                         style={{ width: "auto", minWidth: "100px" }}
                       >
                         {selectedRole}
-                        <span className="dropdown-arrow">▼</span>
+                        <span className="dropdown-arrow bx bx-chevron-down"></span>
                       </button>
                       {activeSelectDropdown === "roleSelect" && (
                         <div className="member-dropdown">
                           <div
-                            className={`member-dropdown-item ${
+                            id="member-dropdown-item"
+                            className={`member-dropdown-item   ${
                               selectedRole === "Member" ? "active" : ""
                             }`}
                             onClick={() => {
@@ -765,29 +802,29 @@ const Navbar = () => {
                   </div>
 
                   <ul
-                    className="nav nav-tabs border-secondary mb-3"
+                    className="nav nav-tabs border-secondary mb-3 mt-3"
                     role="tablist"
                   >
                     <li className="nav-item" role="presentation">
                       <button
                         className={`nav-link ${
                           activeTab === "members"
-                            ? "active bg-white bg-opacity-10"
+                            ? "active bg-white bg-opacity-10 border-bottom border-2 border-white-50"
                             : ""
                         } border-0`}
                         onClick={() => setActiveTab("members")}
                         role="tab"
                         aria-selected={activeTab === "members"}
                       >
-                        Board members{" "}
-                        <span className="badge bg-secondary">1</span>
+                        Board members
+                        <span className="badge bg-secondary ms-1">1</span>
                       </button>
                     </li>
                     <li className="nav-item" role="presentation">
                       <button
                         className={`nav-link ${
                           activeTab === "requests"
-                            ? "active bg-white bg-opacity-10"
+                            ? "active bg-white bg-opacity-10 border-bottom border-2 border-white-50"
                             : ""
                         }`}
                         onClick={() => setActiveTab("requests")}
@@ -821,7 +858,7 @@ const Navbar = () => {
                             onClick={(e) => toggleMemberDropdown("member1", e)}
                           >
                             Admin
-                            <span className="dropdown-arrow">▼</span>
+                            <span className="dropdown-arrow bx bx-chevron-down"></span>
                           </button>
                           {activeMemberDropdown === "member1" && (
                             <div className="member-dropdown">
@@ -863,7 +900,7 @@ const Navbar = () => {
                             onClick={(e) => toggleMemberDropdown("member2", e)}
                           >
                             Member
-                            <span className="dropdown-arrow">▼</span>
+                            <span className="dropdown-arrow bx bx-chevron-down"></span>
                           </button>
                           {activeMemberDropdown === "member2" && (
                             <div className="member-dropdown">
@@ -905,7 +942,7 @@ const Navbar = () => {
                             onClick={(e) => toggleMemberDropdown("member3", e)}
                           >
                             Member
-                            <span className="dropdown-arrow">▼</span>
+                            <span className="dropdown-arrow bx bx-chevron-down"></span>
                           </button>
                           {activeMemberDropdown === "member3" && (
                             <div className="member-dropdown">
@@ -1015,15 +1052,16 @@ const Navbar = () => {
             <li>
               <div
                 className="dropdown-item"
+                onClick={(e) => toggleDotsDropdown("background", e)}
                 style={{ cursor: "pointer", position: "relative" }}
               >
                 <i className="bx bx-palette"></i> Change background
                 <span
-                  className="dropdown-arrow ms-auto"
+                  className="dropdown-arrow ms-auto bx bx-chevron-down"
                   data-dots-dropdown="background"
-                  onClick={(e) => toggleDotsDropdown("background", e)}
+               
                 >
-                  ▼
+                  
                 </span>
                 {activeDotsDropdown === "background" && (
                   <div className="dots-dropdown">
@@ -1052,15 +1090,16 @@ const Navbar = () => {
             <li>
               <div
                 className="dropdown-item"
+                onClick={(e) => toggleDotsDropdown("automation", e)}
                 style={{ cursor: "pointer", position: "relative" }}
               >
                 <i className="bx bx-rocket"></i> Automation
                 <span
-                  className="dropdown-arrow ms-auto"
+                  className="dropdown-arrow ms-auto bx bx-chevron-down"
                   data-dots-dropdown="automation"
-                  onClick={(e) => toggleDotsDropdown("automation", e)}
+                  
                 >
-                  ▼
+                  
                 </span>
                 {activeDotsDropdown === "automation" && (
                   <div className="dots-dropdown">
@@ -1089,15 +1128,16 @@ const Navbar = () => {
             <li>
               <div
                 className="dropdown-item"
+                onClick={(e) => toggleDotsDropdown("labels", e)}
                 style={{ cursor: "pointer", position: "relative" }}
               >
                 <i className="bx bx-label"></i> Labels
                 <span
-                  className="dropdown-arrow ms-auto"
+                  className="dropdown-arrow ms-auto bx bx-chevron-down"
                   data-dots-dropdown="labels"
-                  onClick={(e) => toggleDotsDropdown("labels", e)}
+             
                 >
-                  ▼
+                  
                 </span>
                 {activeDotsDropdown === "labels" && (
                   <div className="dots-dropdown">

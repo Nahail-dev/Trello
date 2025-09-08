@@ -38,6 +38,7 @@ body {
   align-items: center;
   gap: 2px;
   font-size: 20px;
+  cursor: pointer;
   position: relative;
 }
 
@@ -73,6 +74,7 @@ body {
   color: rgb(37, 36, 36);
   padding: 4px;
   border-radius: 50%;
+  cursor: pointer;
   height: 28px;
   width: 28px;
   display: flex;
@@ -562,11 +564,12 @@ h2 {
 .member-details {
   display: flex;
   flex-direction: column;
-  gap: 0.125rem; /* reduced gap between name and description */
+  gap: 0.125rem;
+  color: #9fadbc; 
 }
 
 .member-box strong {
-  color: #e1e1e2;
+  color: #9fadbc;
   display: block;
   margin-bottom: 0; /* removed margin for tighter spacing */
   line-height: 1.2;
@@ -658,6 +661,7 @@ h2 {
   border: none;
   border-radius: 4px;
   transition: background-color 0.2s;
+  font-size: 14px;
 }
 
 .btn-primary:hover {
@@ -835,7 +839,7 @@ form-select:active {
 .member-dropdown-btn {
   background-color: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0);
-  color: #fff;
+  color: #9fadbc;
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -880,6 +884,9 @@ form-select:active {
   transition: background-color 0.2s ease;
   border-bottom: 1px solid #333;
 }
+#member-dropdown-item{
+  padding: 6px !important;
+}
 
 .member-dropdown-item:last-child {
   border-bottom: none;
@@ -907,8 +914,9 @@ form-select:active {
 /* Dots Dropdown Functionality */
 .dots-dropdown {
   position: absolute;
-  top: 0;
-  left: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-40%);
   background-color: #22272b;
   border: 1px solid #444;
   border-radius: 4px;
@@ -930,6 +938,10 @@ form-select:active {
   color: #fff;
 }
 
+.dropdown-arrow{
+  font-size: 14px !important;
+  color: #9fadbc !important;
+}
 .dropdown-item {
   position: relative;
 }
