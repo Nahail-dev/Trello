@@ -1,13 +1,13 @@
 .trello-cards {
   position: relative;
-  padding-top: 60px; /* Space for fixed navbar */
+  padding-top: 20px; /* Space for fixed navbar */
   box-sizing: border-box;
   min-height: 100vh;
   background-color: #1d2125;
   overflow-y: auto;
   height: calc(100vh - 60px);
-  margin: 0;
-  padding-bottom: 20px;
+  
+
 }
 
 /* Modified cards-row for horizontal scroll snap functionality */
@@ -144,7 +144,7 @@
   font-size: 14px;
   color: #a6c5e2;
   position: absolute;
-  bottom: 4px;
+  bottom: 0px;
   left: 0;
   width: 100%;
   border-bottom-left-radius: 8px;

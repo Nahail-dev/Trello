@@ -1,0 +1,60 @@
+.board-card {
+    width: 200px;
+    border: none !important;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .board-card:hover .board-card-img {
+    filter: brightness(80%);
+  }
+  
+  .board-card-img {
+    height: 90px;
+    object-fit: cover;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
+  
+  /* Card body */
+  .board-card-body {
+    background: transparent;
+    padding: 6px;
+  }
+  
+  /* Action icons */
+  .card-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 10px;
+    opacity: 0;                 /* hidden by default */
+    transition: opacity 0.2s;
+  }
+  
+  .board-card:hover .card-actions {
+    opacity: 1;                 /* visible on hover */
+  }
+  
+  .card-actions i {
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .card-actions i:hover {
+    transform: scale(1.2);
+  }
+  
+
+
+  .board-card .card-body {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    background: transparent;
+    padding: 6px;
+  }

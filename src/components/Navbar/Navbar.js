@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
+
 import "./Navbar.css";
 import "./MenuDropdown.css";
 import { BiSolidPlaneAlt, BiGroup } from "react-icons/bi";
@@ -7,9 +8,7 @@ import { IoMdMenu, IoMdClose } from "react-icons/io";
 import { MdOutlineStarBorder, MdDashboard } from "react-icons/md";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { IoPerson } from "react-icons/io5";
-
 import viewOptions from "../../content/viewOptions.json";
-
 import {
   FaTable,
   FaRegCalendarAlt,
@@ -17,15 +16,17 @@ import {
   FaMapMarkerAlt,
   FaLock,
 } from "react-icons/fa";
+import { AuthContext } from "../../auth/AuthContext";
 import { RiBook2Fill } from "react-icons/ri";
 import { GiConsoleController } from "react-icons/gi";
 import { IoMailOutline } from "react-icons/io5";
 import { MdLabelImportantOutline } from "react-icons/md";
 import Dropdown from "../Dropdown/Dropdown";
-import { Link, NavLink } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { MdOutlineFeedback } from "react-icons/md";
 import { RiStarSFill } from "react-icons/ri";
 import { MdLockOutline } from "react-icons/md";
+import { getWorkspaces } from "../../api/auth";
 
 const iconMap = {
   FaTable,
@@ -49,6 +50,14 @@ const Navbar = () => {
   const [selectedRole, setSelectedRole] = useState("Member");
   const [selectedLabel, setSelectedLabel] = useState("Select labels");
   const [activeDotsDropdown, setActiveDotsDropdown] = useState(null);
+
+  const { logout, user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handlelogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const toggleDropdown = useCallback((dropdownName, e) => {
     if (e) {
@@ -93,6 +102,24 @@ const Navbar = () => {
       return dotsName;
     });
   }, []);
+
+  const { id } = useParams();
+  const [board, setBoard] = useState(null);
+
+  useEffect(() => {
+    const fetchBoard = async () => {
+      try {
+        const response = await getWorkspaces();
+        const allBoards = response.data.data;
+        const found = allBoards.find((b) => b.id === parseInt(id));
+        setBoard(found);
+      } catch (error) {
+        console.error("Failed to fetch board", error);
+      }
+    };
+
+    fetchBoard();
+  }, [id]);
 
   useEffect(() => {
     if (
@@ -158,9 +185,9 @@ const Navbar = () => {
   ]);
 
   return (
-    <nav className="app-navbar">
+    <nav className="app-navbar ">
       <div className="app-navbar-left gap-sm-4 gap-2">
-        <h2 className="app-logo">Aut eum omnis consec</h2>
+        <h2 className="app-logo">{board ? board.name : "loading..."}</h2>
 
         <div className="nav-icon-wrapper">
           <div
@@ -226,7 +253,7 @@ const Navbar = () => {
                   <button className="app-dropdown-btn">Start free trial</button>
 
                   <p className="app-special">
-                    <NavLink
+                    <Link
                       to="/"
                       onClick={() => toggleDropdown("menu")}
                       className={({ isActive }) =>
@@ -234,7 +261,7 @@ const Navbar = () => {
                       }
                     >
                       Learn more about trello premium
-                    </NavLink>
+                    </Link>
                   </p>
                 </div>
               }
@@ -409,7 +436,7 @@ const Navbar = () => {
                   <label className="menu-label mb-2">Keyword</label>
                   <input
                     type="text"
-                    placeholder="Enter a keyword..."
+                    placeholder="Enter Link keyword..."
                     className="menu-input"
                   />
                   <small className="menu-hint">
@@ -485,7 +512,7 @@ const Navbar = () => {
                   <label className="menu-option">
                     <input type="checkbox" />
                     <span className="menu-icon">
-                      <MdLabelImportantOutline className="fs-5"/>
+                      <MdLabelImportantOutline className="fs-5" />
                     </span>
                     <span>No labels</span>
                   </label>
@@ -793,9 +820,9 @@ const Navbar = () => {
                     </div>
                     <div className="link-content">
                       <div className="link-title">
-                        Share this board with a link
+                        Share this board with Link link
                       </div>
-                      <Link href="/" className="text-link">
+                      <Link to="/" className="text-link">
                         Create link
                       </Link>
                     </div>
@@ -1014,41 +1041,43 @@ const Navbar = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <div className="dropdown-avatar">AT</div>
                 Profile
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-bell"></i>
                 Notifications
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-bolt-circle"></i>
                 Power-Ups
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-star"></i>
                 Favorites
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-info-circle"></i>
                 Info
-              </a>
+              </Link>
             </li>
-            <li>
-              <a className="dropdown-item" href="/">
-                <i className="bx bx-log-out"></i>
-                Log out
-              </a>
-            </li>
+            {user && (
+              <li>
+                <Link className="dropdown-item" onClick={handlelogout}>
+                  <i className="bx bx-log-out"></i>
+                  Log out
+                </Link>
+              </li>
+            )}
             <li>
               <div
                 className="dropdown-item"
@@ -1059,10 +1088,7 @@ const Navbar = () => {
                 <span
                   className="dropdown-arrow ms-auto bx bx-chevron-down"
                   data-dots-dropdown="background"
-               
-                >
-                  
-                </span>
+                ></span>
                 {activeDotsDropdown === "background" && (
                   <div className="dots-dropdown">
                     <div
@@ -1097,10 +1123,7 @@ const Navbar = () => {
                 <span
                   className="dropdown-arrow ms-auto bx bx-chevron-down"
                   data-dots-dropdown="automation"
-                  
-                >
-                  
-                </span>
+                ></span>
                 {activeDotsDropdown === "automation" && (
                   <div className="dots-dropdown">
                     <div
@@ -1135,10 +1158,7 @@ const Navbar = () => {
                 <span
                   className="dropdown-arrow ms-auto bx bx-chevron-down"
                   data-dots-dropdown="labels"
-             
-                >
-                  
-                </span>
+                ></span>
                 {activeDotsDropdown === "labels" && (
                   <div className="dots-dropdown">
                     <div
@@ -1188,44 +1208,44 @@ const Navbar = () => {
               </div>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-sticker"></i> Stickers
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-template"></i> Make template
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-list-check"></i> Activity
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-archive"></i> Archived items
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-show"></i> Watch
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-copy-alt"></i> Copy board
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-mail-send"></i> Email-to-board
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="dropdown-item" href="/">
+              <Link className="dropdown-item" to="/">
                 <i className="bx bx-window-close"></i> Close board
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

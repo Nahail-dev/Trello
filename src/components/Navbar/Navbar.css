@@ -8,16 +8,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #e1e1e2;
+  background-color: #e1e1e29d;
   color: black;
   padding: 4px 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
+
   box-sizing: border-box;
-  z-index: 1000;
+  z-index: 3000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: visible;
 }
@@ -566,7 +562,7 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
-  color: #9fadbc; 
+  color: #9fadbc;
 }
 
 .member-box strong {
@@ -668,7 +664,7 @@ h2 {
 .btn-primary:hover {
   background-color: #026aa7;
 }
-.btn-outline-secondary:hover{
+.btn-outline-secondary:hover {
   border-color: #9fadbc;
 }
 
@@ -693,22 +689,6 @@ h2 {
 
 .bg-secondary {
   background-color: #5e6c84 !important;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 576px) {
-  .modal-dialog {
-    margin: 0.5rem;
-  }
-
-  .d-flex {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .d-flex > * {
-    width: 100%;
-  }
 }
 
 .dropdown-card {
@@ -882,7 +862,7 @@ form-select:active {
   transition: background-color 0.2s ease;
   border-bottom: 1px solid #333;
 }
-#member-dropdown-item{
+#member-dropdown-item {
   padding: 6px !important;
 }
 
@@ -936,7 +916,7 @@ form-select:active {
   color: #fff;
 }
 
-.dropdown-arrow{
+.dropdown-arrow {
   font-size: 14px !important;
   color: #9fadbc !important;
 }

@@ -18,7 +18,7 @@ function Tcard() {
 
   return (
     <div>
-      <section className="trello-cards mt-2">
+      <section className="trello-cards">
         <div className="container-fluid">
           <div className="cards-row">
             <div className="card-container">
@@ -85,7 +85,7 @@ function Tcard() {
                 className="card-inputthree textarea mb-1"
                 placeholder="Enter list name or paste a link"
               />
-              <div className="d-flex align-items-center">
+              <div className="d-flex justify-content-between">
                 <button className="add-card-btntwo me-1">Add card</button>
                 <i
                   className="bx bx-x"

@@ -1,0 +1,45 @@
+
+  /* Card styling */
+  .card {
+    border-radius: 1rem;
+  }
+  
+  /* Input fields */
+  .form-control {
+    background-color: #1c1c1c !important; /* dark field */
+    color: #fff !important; /* white text */
+    border: 1px solid #444 !important;
+  }
+  
+  .form-control:focus {
+    background-color: #1c1c1c !important;
+    color: #fff !important;
+    border-color: #5ba4cf !important;
+    box-shadow: 0 0 0 2px rgba(91, 164, 207, 0.3);
+  }
+  
+  /* Placeholder style */
+  .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important; /* dim white */
+    opacity: 1 !important;
+  }
+  
+  /* Remove floating labels effect */
+  .form-floating > label {
+    display: none !important;
+  }
+  
+  /* Links */
+  a {
+    text-decoration: none;
+  }
+  
+  a.text-white-50:hover {
+    text-decoration: underline;
+  }
+  
+  /* Social buttons */
+  .btn-link {
+    font-size: 1.5rem;
+  }
+  
