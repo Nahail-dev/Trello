@@ -1,77 +1,40 @@
-
-
-.container{
-  margin-top: 7%
-}
-/* Sidebar container */
-.col-3 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+.container {
+  margin-top: 7%;
 }
 
-/* All sidebar items */
-.sidebar-item {
-  padding: 12px 15px;
-  color: #9fadbc;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+.header-with-icon h4 {
+  color: #bfc1c4;
 }
 
-/* Hover effect */
-.sidebar-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+.bi {
+  color: #bfc1c4;
 }
-
-/* Active tab */
-.sidebar-item.active {
-  border-left: 4px solid #0d6efd;
-  color: #fff;
-  font-weight: 600;
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* Bottom border only for first three tabs container */
-.sidebar-main {
-  border-bottom: 1px solid #2a2a2a;
-  margin-bottom: 10px;
-  border-radius: 0;
-}
-
-/* Optional spacing for other tabs */
-.sidebar-other .sidebar-item {
-  margin-bottom: 5px;
-}
-
 
 @media (max-width: 991px) {
   .container {
     margin-top: 10%;
   }
-  
 }
 @media (max-width: 768px) {
-  .container{
+  .container {
     margin-top: 15%;
   }
+  
 }
 @media (max-width: 450px) {
-  .container{
+  .container {
     margin-top: 20%;
   }
   .header-with-icon h4 {
     font-size: 14px !important;
-    
   }
-  .header-with-icon span{
+  .header-with-icon span {
     font-size: 14px !important;
   }
-  .sidebar-item{
+  .sidebar-item {
     font-size: 12px !important;
   }
 }
-
 
 .header-with-icon {
   display: flex;
@@ -83,3 +46,60 @@
   white-space: nowrap;
   margin-bottom: 0;
 }
+.workspace-title,
+.workspace-badge {
+  color: #bfc1c498;
+}
+.workspace-badge {
+  background-color: #5498ff;
+  font-size: 10px !important;
+  margin-bottom: 5px;
+}
+.workspace-description {
+  color: #797a7c98;
+}
+
+.del-modal {
+  color: #bfc1c4;
+}
+.workspace-btn {
+  font-size: 15px !important;
+  padding: 1px 10px;
+  background-color: rgba(255, 255, 255, 0.274);
+  border: none;
+  border-radius: 3px;
+  color: #bfc1c4 !important;
+}
+
+.workspace-btn:hover {
+  background-color: rgba(255, 255, 255, 0.375);
+}
+
+.create-card {
+  width: 200px;
+max-width: 200px;
+height: 120px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-card-body {
+  color: #bfc1c4 !important;
+  padding-top: 20%;
+  text-align: center;
+  font-size: 14px;
+}
+
+.create-card:hover {
+  filter: brightness(87%);
+}
+
+/* modal btn close */
+/* .btn-close{
+  color:#bfc1c4 !important;
+} */

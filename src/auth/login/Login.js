@@ -4,7 +4,7 @@ import "boxicons/css/boxicons.min.css";
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/Api";
-import { AuthContext } from "../AuthContext"; // ✅ import context
+import { AuthContext } from "../AuthContext";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // ✅ get login function
+  const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({
@@ -33,7 +33,7 @@ function Login() {
 
       if (res.access_token) {
         login(res.access_token);
-        navigate("/board");
+        navigate("/");
       } else {
         setError("Invalid response from server. Please try again.");
       }

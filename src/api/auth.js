@@ -12,16 +12,16 @@ export const signup = (data) => API.post("/signup", data);
 
 // Workspace CRUD operations  
 export const createWorkspace = (data) =>
-  API.post("api/add/workspace", data, { headers: authHeader() });
+  API.post("api/workspace", data, { headers: authHeader() });
 
 export const getWorkspaces = () =>
-  API.get("api/workspace/list", { headers: authHeader() });
+  API.get("api/workspace", { headers: authHeader() });
 
 export const updateWorkspace = (id, data) =>
-  API.put(`api/update/workspace/${id}`, data, { headers: authHeader() });
+  API.put(`api/workspace/${id}`, data, { headers: authHeader() });
 
 export const deleteWorkspace = (id) =>
-  API.delete(`api/delete/workspace/${id}`, { headers: authHeader() });
+  API.delete(`api/workspace/${id}`, { headers: authHeader() });
 
 // User profile
 // export const getUserProfile = () =>

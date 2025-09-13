@@ -5,11 +5,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./auth/login/Login";
 import ProtectedRoute from "./auth/ProtectedRoutes";
 import { AuthProvider } from "./auth/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
@@ -21,7 +22,7 @@ function App() {
             }
           />
           <Route
-            path="/board"
+            path="/"
             element={
               <ProtectedRoute>
                 <Board />
@@ -29,8 +30,9 @@ function App() {
             }
           />
         </Routes>
-      </Router>
-    </AuthProvider>
+        <ToastContainer />
+      </AuthProvider>
+    </Router>
   );
 }
 
