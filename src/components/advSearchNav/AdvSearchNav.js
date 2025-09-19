@@ -4,14 +4,14 @@ import SearchImg from '../../assets/images/search-img.jpg'
 import './AdvSearchNav.css'
 
 
-function AdvSearchNav({ sidebarOpen, toggleSidebar }) {
+function AdvSearchNav() {
   return (
     <div><nav className="navbar-custom border-bottom border-secondary">
     <div className="navbar-content">
       <div className="left-section">
         <Link href="#" className="logo-container">
           <div className="logo">
-            <i className="bx bx-grid-alt" onClick={toggleSidebar}></i>
+            {/* <i className="bx bx-grid-alt" onClick={toggleSidebar}></i> */}
           </div>
           <span className="trellohover d-flex">
             <div className="trello-icon me-2">

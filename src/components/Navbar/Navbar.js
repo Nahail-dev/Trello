@@ -26,7 +26,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { MdOutlineFeedback } from "react-icons/md";
 import { RiStarSFill } from "react-icons/ri";
 import { MdLockOutline } from "react-icons/md";
-import { getWorkspaces } from "../../api/auth";
+import { getProjects } from "../../api/auth";
 
 const iconMap = {
   FaTable,
@@ -103,15 +103,15 @@ const Navbar = () => {
     });
   }, []);
 
-  const { id } = useParams();
+  const { workspace_id , board_name } = useParams();
   const [board, setBoard] = useState(null);
 
   useEffect(() => {
     const fetchBoard = async () => {
       try {
-        const response = await getWorkspaces();
+        const response = await getProjects(workspace_id);
         const allBoards = response.data.data;
-        const found = allBoards.find((b) => b.id === parseInt(id));
+        const found = allBoards.find((b) => b.project_title === board_name);
         setBoard(found);
       } catch (error) {
         console.error("Failed to fetch board", error);
@@ -119,7 +119,7 @@ const Navbar = () => {
     };
 
     fetchBoard();
-  }, [id]);
+  }, [workspace_id, board_name]);
 
   useEffect(() => {
     if (
@@ -187,7 +187,7 @@ const Navbar = () => {
   return (
     <nav className="app-navbar ">
       <div className="app-navbar-left gap-sm-4 gap-2">
-        <h2 className="app-logo">{board ? board.name : "loading..."}</h2>
+        <h2 className="app-logo">{board ? board.project_title : "loading..."}</h2>
 
         <div className="nav-icon-wrapper">
           <div

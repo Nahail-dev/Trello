@@ -7,10 +7,12 @@ const authHeader = () => {
 };
 
 // Authentication
-export const login = (data) => API.post("/login", data);
-export const signup = (data) => API.post("/signup", data);
+export const login = (data) => API.post("login", data);
 
-// Workspace CRUD operations  
+// ======================
+// Workspace CRUD operations
+// ======================
+
 export const createWorkspace = (data) =>
   API.post("api/workspace", data, { headers: authHeader() });
 
@@ -22,6 +24,27 @@ export const updateWorkspace = (id, data) =>
 
 export const deleteWorkspace = (id) =>
   API.delete(`api/workspace/${id}`, { headers: authHeader() });
+
+// ======================
+// Projects CRUD operations
+// ======================
+
+export const addProjects = (projectData, isFormData = false) => {
+  return API.post("api/projects", projectData, {
+    headers: {
+      ...authHeader(),
+      ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}),
+    },
+  });
+};
+
+export const getProjects = (workspace_id) => {
+  return API.get(`api/projects/${workspace_id}`, { headers: authHeader() });
+};
+
+export const deleteProjects = (project_id) => {
+  API.delete(`api/projects/${project_id}`, { headers: authHeader() });
+};
 
 // User profile
 // export const getUserProfile = () =>

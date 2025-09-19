@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
-            path="/dashboard/:id/:name"
+            path="/dashboard/:workspace_id/:board_name"
             element={
               <ProtectedRoute>
                 <Dashboard />

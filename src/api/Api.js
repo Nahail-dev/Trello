@@ -1,25 +1,25 @@
-import axios from "axios"
+import axios from "axios";
 
-const API_BASE_URL = "https://trello.ai3dscanning.com/"
+const API_BASE_URL = "https://trello.ai3dscanning.com/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
-})
+});
 
 export const saveToken = (token) => {
-  return localStorage.setItem("authToken", token)
-}
+  return localStorage.setItem("authToken", token);
+};
 
 export const getToken = () => {
-  return localStorage.getItem("authToken")
-}
+  return localStorage.getItem("authToken");
+};
 
 export const clearToken = () => {
-  localStorage.removeItem("authToken")
-}
+  localStorage.removeItem("authToken");
+};
 
 // export const getUserProfile = async () => {
 //   const token = getToken()
@@ -38,13 +38,13 @@ export const loginUser = async (email, password) => {
   const response = await api.post("/api/login", {
     email,
     password,
-  })
+  });
 
   if (response.data?.access_token) {
-    saveToken(response.data.access_token) // ✅ use access_token
+    saveToken(response.data.access_token); // ✅ use access_token
   }
 
-  return response.data
-}
+  return response.data;
+};
 
-export default api
+export default api;

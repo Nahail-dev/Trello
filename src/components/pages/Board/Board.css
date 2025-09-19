@@ -99,6 +99,46 @@ height: 120px;
   filter: brightness(87%);
 }
 
+
+
+.add-board-dropdown {
+  width: 300px;
+  background-color: #1d2130;
+  z-index: 4000 !important;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #bfc1c4 !important;
+}
+
+.add-board-dropdown .header {
+  padding: 10px;
+
+}
+
+.add-board-dropdown .header h5 {
+  margin: 0;
+  flex-grow: 1;           /* Take full available space */
+  text-align: center;     /* Center text inside */
+}
+
+.add-board-dropdown .header .bx {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.add-board-dropdown .image{
+  padding: 10px;
+}
+
+.add-board-select-desc{
+  font-size: 12px;
+}
+
+
+
+
 /* modal btn close */
 /* .btn-close{
   color:#bfc1c4 !important;

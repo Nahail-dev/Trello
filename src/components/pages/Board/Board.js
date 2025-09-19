@@ -2,76 +2,143 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AdvSearchNav from "../../advSearchNav/AdvSearchNav";
 import CardBoard from "../../cardBoard/CardBoard";
-import img from "../../../assets/images/i1.jpg";
+
 import "./Board.css";
 import {
   createWorkspace,
   getWorkspaces,
   updateWorkspace,
   deleteWorkspace,
+  getProjects,
+  addProjects,
+  deleteProjects,
 } from "../../../api/auth";
 import { toast } from "react-toastify";
 
 function Board() {
-  const [boards, setBoards] = useState([]);
-  const [recentBoards, setRecentBoards] = useState(() => {
-    const saved = localStorage.getItem("recentWorkspaces");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [workspaces, setWorkspaces] = useState([]);
+
+  const images = [
+    "/assets/images/i1.jpg",
+    "/assets/images/i2.jpg",
+    "/assets/images/i3.jpg",
+    "/assets/images/i4.jpg",
+  ];
+
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [workspaceName, setWorkspaceName] = useState("");
+  const [boardsByWorkspace, setBoardsByWorkspace] = useState({});
   const [workspacePrivacy, setWorkspacePrivacy] = useState("private");
   const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
   const [editPrivacy, setEditPrivacy] = useState("private");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
   const [deleteId, setDeleteId] = useState(null);
   const [deleteName, setDeleteName] = useState("");
   const [error, setError] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [boardDropdown, setBoardDropdown] = useState(false);
+  const [activeDropdownWsId, setActiveDropdownWsId] = useState(null);
+  const [selectedBackgrounds, setSelectedBackgrounds] = useState({});
+  const [boardsError, setBoardsError] = useState({});
+  const [boardTitles, setBoardTitles] = useState({});
+  const [visibilities, setVisibilities] = useState({});
 
   const navigate = useNavigate();
-  const MAX_RECENT = 4;
 
-  // Handle window resize for sidebar
+  const handleCreateBoard = async (workspaceId, boardData) => {
+    try {
+      const response = await addProjects({
+        ...boardData,
+        workspace_id: workspaceId,
+      });
+
+      const createdBoard = response.data.data;
+
+      if (createdBoard?.id) {
+        const formattedBoardName = encodeURIComponent(
+          createdBoard.project_title
+        );
+
+        // Save board data in localStorage
+        localStorage.setItem(
+          "boardData",
+          JSON.stringify({
+            background_type: createdBoard.background_type,
+            background_details: createdBoard.background_details,
+          })
+        );
+        navigate(`/dashboard/${workspaceId}/${formattedBoardName}`);
+      }
+
+      toast.success("Board created successfully ✅");
+    } catch (error) {
+      console.error("Error creating board:", error);
+      toast.error("Failed to create board ❌");
+    }
+  };
+
+  const handleDeleteBoard = async (boardId) => {
+    try {
+      await deleteProjects(boardId);
+      toast.success("Board deleted successfully!");
+      // Optionally refresh the list
+      fetchWorkspaces();
+    } catch (error) {
+      console.error("Error deleting board:", error);
+      toast.error("Failed to delete board.");
+    }
+  };
+
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 768) setSidebarOpen(false);
-      else setSidebarOpen(true);
+    const fetchData = async () => {
+      await fetchWorkspaces();
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Fetch workspaces on mount
-  useEffect(() => {
-    fetchWorkspaces();
+    fetchData();
   }, []);
 
   const fetchWorkspaces = async () => {
     setFetching(true);
     try {
-      const response = await getWorkspaces();
-      setBoards(response.data.data || []);
+      const resp = await getWorkspaces();
+      const fetchedWorkspaces = resp?.data?.data || [];
+      setWorkspaces(fetchedWorkspaces);
       setError("");
-    } catch (error) {
-      console.error("Failed to fetch workspaces", error);
 
-      // fallback: load recent workspaces from localStorage
-      const localRecent =
-        JSON.parse(localStorage.getItem("recentWorkspaces")) || [];
-      if (localRecent.length > 0) {
-        setBoards(localRecent);
-        setError("server unavailable");
-        toast.info("Using recent workspaces from local storage ⚡");
-      } else {
-        setBoards([]);
-        setError("We couldn’t load your workspaces. Please try again later.");
+      const boardsData = {};
+      const boardsErrs = {}; // collect errors for workspaces
+
+      for (const ws of fetchedWorkspaces) {
+        try {
+          const boardResp = await getProjects(ws.id);
+          boardsData[ws.id] = boardResp?.data?.data || [];
+        } catch (err) {
+          const status = err?.response?.status;
+
+          if (status === 404) {
+            // API says "not found" — treat as no boards (do NOT set an error)
+            boardsData[ws.id] = [];
+          } else {
+            // Real error (network, 5xx, etc.) — store it so the UI can show it only for this workspace
+            console.error(`Error fetching boards for workspace ${ws.id}`, err);
+            boardsData[ws.id] = [];
+            boardsErrs[ws.id] =
+              err?.response?.data?.message ||
+              err.message ||
+              "Failed to load boards";
+          }
+        }
       }
+
+      setBoardsByWorkspace(boardsData);
+      setBoardsError(boardsErrs);
+    } catch (err) {
+      console.error("Failed to fetch workspaces", err);
+      setError("We couldn’t load your workspaces. Please try again later.");
+      // optionally clear boards state
+      setBoardsByWorkspace({});
+      setBoardsError({});
     } finally {
       setFetching(false);
     }
@@ -80,30 +147,34 @@ function Board() {
   const handleDeleteWorkspace = async (id) => {
     try {
       await deleteWorkspace(id);
-      setBoards((prev) => prev.filter((b) => b.id !== id));
-      const updatedRecent = recentBoards.filter((b) => b.id !== id);
-      setRecentBoards(updatedRecent);
-      localStorage.setItem("recentWorkspaces", JSON.stringify(updatedRecent));
+      setWorkspaces((prev) => prev.filter((b) => b.id !== id));
+
       toast.success("Workspace deleted successfully 🗑️");
     } catch (error) {
       toast.error("Failed to delete workspace ❌");
     }
   };
 
-  const handleBoardClick = (board) => {
-    setRecentBoards((prev) => {
-      const updated = prev.filter((b) => b.id !== board.id);
-      updated.unshift(board);
-      if (updated.length > MAX_RECENT) updated.pop();
-      localStorage.setItem("recentWorkspaces", JSON.stringify(updated));
-      return updated;
-    });
-    navigate(`/dashboard/${board.id}/${board.name.replace(/\s+/g, "-")}`);
+  const handleBoardClick = (workspaceId, board) => {
+    if (!board) return;
+
+    const formattedBoardName = encodeURIComponent(board.project_title);
+
+    // Save board data in localStorage
+    localStorage.setItem(
+      "boardData",
+      JSON.stringify({
+        background_type: board.background_type,
+        background_details: board.background_details,
+      })
+    );
+
+    navigate(`/dashboard/${workspaceId}/${formattedBoardName}`);
   };
 
   const openEditModal = (board) => {
     setEditId(board.id);
-    setEditName(board.name);
+    setEditName(board.project_title);
     setEditPrivacy(board.privacy || "private");
     setShowEditModal(true);
   };
@@ -117,20 +188,11 @@ function Board() {
       const updatedWorkspace = response.data.data;
 
       // update all workspaces
-      setBoards((prev) =>
+      setWorkspaces((prev) =>
         prev.map((board) =>
           board.id === editId ? { ...board, ...updatedWorkspace } : board
         )
       );
-
-      // update recent workspaces + localStorage
-      setRecentBoards((prev) => {
-        const updated = prev.map((board) =>
-          board.id === editId ? { ...board, ...updatedWorkspace } : board
-        );
-        localStorage.setItem("recentWorkspaces", JSON.stringify(updated));
-        return updated;
-      });
 
       setShowEditModal(false);
       setEditId(null);
@@ -149,14 +211,11 @@ function Board() {
 
       const response = await getWorkspaces();
       const allWorkspaces = response.data?.data || [];
-      setBoards(allWorkspaces);
+      setWorkspaces(allWorkspaces);
 
       setShowModal(false);
       setWorkspaceName("");
       setWorkspacePrivacy("private");
-
-      const newWorkspace = allWorkspaces.find((ws) => ws.name === payload.name);
-      if (newWorkspace?.id) handleBoardClick(newWorkspace);
 
       toast.success("Workspace created ✅");
     } catch (error) {
@@ -168,10 +227,7 @@ function Board() {
 
   return (
     <>
-      <AdvSearchNav
-        sidebarOpen={sidebarOpen}
-        toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-      />
+      <AdvSearchNav />
 
       <div className="container mt-5">
         <div className="row">
@@ -228,15 +284,17 @@ function Board() {
               <p className="text-danger text-center my-4">{error}</p>
             ) : (
               <div className="workspace-list ">
-                {boards.map((ws) => (
+                {workspaces.map((ws) => (
                   <div key={ws.id} className="mb-4">
+                    {/* === Workspace Header === */}
                     <div className="d-flex align-items-center justify-content-between mb-2 border-bottom border-1">
-                      <h5 className="fw-bold d-flex align-items-center gap-1 workspace-title ">
+                      <h5 className="fw-bold d-flex align-items-center gap-1 workspace-title">
                         {ws.name}
-                        <span className="badge workspace-badge ">
+                        <span className="badge workspace-badge">
                           {ws.privacy}
                         </span>
                       </h5>
+
                       <div className="workspace-actions d-flex align-items-center ms-2">
                         <button
                           className="me-3 workspace-btn"
@@ -244,13 +302,12 @@ function Board() {
                           onClick={(e) => {
                             e.stopPropagation();
                             openEditModal(ws);
-                            setShowModal(true);
                           }}
                         >
                           <span className="bi bi-pencil-fill"></span>Edit
                         </button>
                         <button
-                          className=" workspace-btn"
+                          className="workspace-btn"
                           title="Delete Workspace"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -264,62 +321,276 @@ function Board() {
                       </div>
                     </div>
 
-                    {/* Boards under workspace */}
+                    {/* === Boards or Error Section === */}
+                    <div className="d-flex flex-wrap gap-3 mt-3 justify-content-center justify-content-md-start">
+                      {/* --- Show Error for this Workspace --- */}
+                      {boardsError[ws.id] && (
+                        <p className="text-danger">{boardsError[ws.id]}</p>
+                      )}
 
-                    <div className="d-flex flex-wrap gap-3 mt-3  justify-content-center justify-content-md-start">
-                      <CardBoard imgSrc={img} title="Board 1" variant="image" />
-                      <CardBoard imgSrc={img} title="Board 2" variant="image" />
-                      <CardBoard imgSrc={img} title="Board 3" variant="image" />
-                      <CardBoard imgSrc={img} title="Board 4" variant="image" />
-                      <CardBoard imgSrc={img} title="Board 5" variant="image" />
-                      <CardBoard imgSrc={img} title="Board 6" variant="image" />
+                      {/* --- Boards Display --- */}
+                      {boardsByWorkspace[ws.id]?.length > 0 &&
+                        boardsByWorkspace[ws.id].map((board) => (
+                          <CardBoard
+                            key={board.id}
+                            title={board.project_title}
+                            variant={board.background_type}
+                            background={board.background_details}
+                            onClick={() => handleBoardClick(ws.id, board)}
+                            onDelete={() => handleDeleteBoard(ws.id, board.id)} // ✅ include ws.id for uniqueness
+                          />
+                        ))}
+
+                      {/* --- Add Board Card --- */}
                       <CardBoard
                         title="Add Board"
                         variant="add"
-                        onClick={() => setBoardDropdown(true)}
+                        onClick={() =>
+                          setActiveDropdownWsId(
+                            activeDropdownWsId === ws.id ? null : ws.id
+                          )
+                        }
                       />
-                      {/* dropdown */}
 
-                      {boardDropdown && (
-                        <div
-                        className="dropdown-menu show p-3 shadow border-0"
-                        style={{
-                          width: "320px",
-                          position: "absolute",
-                          top: "100%",
-                          left: 0,
-                          zIndex: 1050,
-                        }}
-                      >
-                        <h6 className="fw-bold mb-3">Create board</h6>
-              
-                        <div className="d-flex flex-wrap gap-2 mb-3">
-                          <div className="bg-primary rounded" style={{ width: "40px", height: "30px" }}></div>
-                          <div className="bg-warning rounded" style={{ width: "40px", height: "30px" }}></div>
-                          <div className="bg-success rounded" style={{ width: "40px", height: "30px" }}></div>
-                          <div className="bg-info rounded" style={{ width: "40px", height: "30px" }}></div>
+                      {/* --- Add Board Dropdown --- */}
+                      {activeDropdownWsId === ws.id && (
+                        <div className="add-board-dropdown text-center rounded-4 p-3">
+                          <div className="add-board-header d-flex align-items-center justify-content-between mb-3">
+                            <h5 className="text-center mb-0">Create Board</h5>
+                            <span
+                              className="bx bx-x"
+                              role="button"
+                              onClick={() => setActiveDropdownWsId(null)}
+                            />
+                          </div>
+
+                          {/* === Background Selection === */}
+                          <div className="text-start">
+                            <label className="fw-semibold mb-2">
+                              Background
+                            </label>
+
+                            {/* --- Image Background Options --- */}
+                            <div className="d-flex flex-wrap gap-2 mb-3">
+                              {images.map((image, index) => {
+                                const isSelected =
+                                  selectedBackgrounds[ws.id]?.type ===
+                                    "image" &&
+                                  selectedBackgrounds[ws.id]?.details === image;
+
+                                return (
+                                  <div
+                                    key={index}
+                                    className={`bg-option position-relative ${
+                                      isSelected
+                                        ? "border-primary border-3"
+                                        : ""
+                                    }`}
+                                    style={{
+                                      backgroundImage: `url(${image})`,
+                                      width: "60px",
+                                      height: "40px",
+                                      backgroundSize: "cover",
+                                      backgroundPosition: "center",
+                                      borderRadius: "6px",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      setSelectedBackgrounds((prev) => ({
+                                        ...prev,
+                                        [ws.id]: {
+                                          type: "image",
+                                          details: image,
+                                        },
+                                      }))
+                                    }
+                                  >
+                                    {isSelected && (
+                                      <i className="bi bi-check-circle-fill text-primary position-absolute top-0 end-0 me-1 mt-1"></i>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            {/* --- Gradient Background Options --- */}
+                            <div className="d-flex gap-2 mb-3 flex-wrap">
+                              {[
+                                "linear-gradient(45deg, #ff9a9e, #fad0c4)",
+                                "linear-gradient(45deg, #a1c4fd, #c2e9fb)",
+                                "linear-gradient(45deg, #fbc2eb, #a6c1ee)",
+                                "linear-gradient(45deg, #84fab0, #8fd3f4)",
+                                "linear-gradient(45deg, #fccb90, #d57eeb)",
+                              ].map((gradient, index) => {
+                                const isSelected =
+                                  selectedBackgrounds[ws.id]?.type ===
+                                    "gradient" &&
+                                  selectedBackgrounds[ws.id]?.details ===
+                                    gradient;
+
+                                return (
+                                  <div
+                                    key={index}
+                                    className={`bg-option position-relative ${
+                                      isSelected
+                                        ? "border-primary border-3"
+                                        : ""
+                                    }`}
+                                    style={{
+                                      background: gradient,
+                                      width: "45px",
+                                      height: "30px",
+                                      borderRadius: "6px",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      setSelectedBackgrounds((prev) => ({
+                                        ...prev,
+                                        [ws.id]: {
+                                          type: "gradient",
+                                          details: gradient,
+                                        },
+                                      }))
+                                    }
+                                  >
+                                    {isSelected && (
+                                      <i className="bi bi-check-circle-fill text-primary position-absolute top-0 end-0 me-1 mt-1"></i>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            {/* --- Board Title Input --- */}
+                            <div className="text-start d-flex flex-column mt-2">
+                              <label>Board title</label>
+                              <input
+                                type="text"
+                                name={`board_title_${ws.id}`}
+                                placeholder="Enter board title"
+                                className="form-control"
+                                value={boardTitles[ws.id] || ""}
+                                onChange={(e) =>
+                                  setBoardTitles((prev) => ({
+                                    ...prev,
+                                    [ws.id]: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+
+                            {/* --- Visibility Select --- */}
+                            <div className="text-start d-flex flex-column mt-3">
+                              <label>Visibility</label>
+                              <div className="dropup w-100">
+                                <button
+                                  className="btn btn-dark dropdown-toggle w-100 d-flex align-items-center text-start"
+                                  type="button"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                >
+                                  <i className="bi bi-eye fs-5 me-2"></i>
+                                  <span className="flex-grow-1">
+                                    {visibilities[ws.id] || "Select visibility"}
+                                  </span>
+                                </button>
+
+                                <ul className="dropdown-menu w-100">
+                                  <li>
+                                    <button
+                                      className="dropdown-item"
+                                      type="button"
+                                      onClick={() =>
+                                        setVisibilities((prev) => ({
+                                          ...prev,
+                                          [ws.id]: "private",
+                                        }))
+                                      }
+                                    >
+                                      <div className="d-flex align-items-center">
+                                        <i className="bi bi-lock fs-5 me-2"></i>
+                                        <div>
+                                          <p className="mb-0">Private</p>
+                                          <small>
+                                            Only workspace members can see this
+                                            board
+                                          </small>
+                                        </div>
+                                      </div>
+                                    </button>
+                                  </li>
+
+                                  <li>
+                                    <button
+                                      className="dropdown-item"
+                                      type="button"
+                                      onClick={() =>
+                                        setVisibilities((prev) => ({
+                                          ...prev,
+                                          [ws.id]: "public",
+                                        }))
+                                      }
+                                    >
+                                      <div className="d-flex align-items-center">
+                                        <i className="bi bi-globe fs-5 me-2"></i>
+                                        <div>
+                                          <p className="mb-0">Public</p>
+                                          <small>
+                                            Anyone with the link can see this
+                                            board
+                                          </small>
+                                        </div>
+                                      </div>
+                                    </button>
+                                  </li>
+
+                                  <li>
+                                    <button
+                                      className="dropdown-item"
+                                      type="button"
+                                      onClick={() =>
+                                        setVisibilities((prev) => ({
+                                          ...prev,
+                                          [ws.id]: "guest",
+                                        }))
+                                      }
+                                    >
+                                      <div className="d-flex align-items-center">
+                                        <i className="bi bi-person fs-5 me-2"></i>
+                                        <div>
+                                          <p className="mb-0">Guest</p>
+                                          <small>
+                                            Guests can view with invite
+                                          </small>
+                                        </div>
+                                      </div>
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+
+                            {/* --- Create Button --- */}
+                            <div className="mt-3">
+                              <button
+                                className="btn btn-primary w-100"
+                                onClick={() =>
+                                  handleCreateBoard(ws.id, {
+                                    project_title: boardTitles[ws.id],
+                                    background_type:
+                                      selectedBackgrounds[ws.id]?.type || "",
+                                    background_details:
+                                      selectedBackgrounds[ws.id]?.details || "",
+                                    visibility:
+                                      visibilities[ws.id] || "private",
+                                  })
+                                }
+                              >
+                                Create
+                              </button>
+                            </div>
+                          </div>
                         </div>
-              
-                        <div className="mb-3">
-                          <label className="form-label">Board title *</label>
-                          <input type="text" className="form-control" placeholder="Enter board title" />
-                        </div>
-              
-                        <div className="mb-3">
-                          <label className="form-label">Visibility</label>
-                          <select className="form-select">
-                            <option>Workspace</option>
-                            <option>Private</option>
-                          </select>
-                        </div>
-              
-                        <button
-                          className="btn btn-primary w-100"
-                          onClick={() => setBoardDropdown(false)}
-                        >
-                          Create
-                        </button>
-                      </div>
                       )}
                     </div>
                   </div>
@@ -334,9 +605,9 @@ function Board() {
               <span className="bi bi-person fs-4 me-2"></span>
               <h4 className="header-with-icon mb-0">Guest Workspace</h4>
             </div>
-            {boards.filter((b) => b.type === "guest").length ? (
+            {workspaces.filter((b) => b.type === "guest").length ? (
               <div className="d-flex flex-wrap align-items-center gap-3 mb-4">
-                {boards
+                {workspaces
                   .filter((b) => b.type === "guest")
                   .map((board) => (
                     <CardBoard
@@ -369,7 +640,7 @@ function Board() {
             <div className="modal-content bg-dark text-secondary">
               <div className="modal-header">
                 <h5 className="modal-title">
-                  <i className="bi bi-plus-circle me-2"></i>Create a New
+                  <i className="bi bi-plus-circle me-2"></i>Create Link New
                   Workspace
                 </h5>
                 <button
@@ -458,7 +729,7 @@ function Board() {
                     type="text"
                     className="form-control bg-dark text-secondary"
                     style={{ color: "#9fadbc" }}
-                    value={editName}
+                    value={editName || ""}
                     onChange={(e) => setEditName(e.target.value)}
                   />
                 </div>
@@ -469,7 +740,7 @@ function Board() {
                   <select
                     className="form-select bg-dark text-secondary"
                     style={{ color: "#9fadbc" }}
-                    value={editPrivacy}
+                    value={editPrivacy || "private"}
                     onChange={(e) => setEditPrivacy(e.target.value)}
                   >
                     <option value="private">

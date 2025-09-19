@@ -2,9 +2,7 @@
   width: 200px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   cursor: pointer;
-
   border-radius: 2rem !important;
-
 }
 
 .board-card:hover .board-card-img {
@@ -58,9 +56,8 @@
   padding: 6px;
 }
 
-
-.add-board{
+.add-board {
   border-bottom-left-radius: 1rem !important;
-  border-bottom-right-radius: 1rem !important;  
-  height: 120px;  
+  border-bottom-right-radius: 1rem !important;
+  height: 150px !important;
 }
