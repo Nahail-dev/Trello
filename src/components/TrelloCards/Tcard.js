@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   DndContext,
   closestCenter,
@@ -14,11 +14,11 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
-
 import Droppable from "./Droppable";
 import SortableCard from "./SortableCard";
 import "./Tcard.css";
 import { Link } from "react-router-dom";
+import CardModal from "./CardModal";
 
 function Tcard() {
   const [lists, setLists] = useState([]);
@@ -34,11 +34,89 @@ function Tcard() {
   const [activeCard, setActiveCard] = useState(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // require slight movement to start drag, so simple clicks open modal
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalCard, setModalCard] = useState(null);
+  const modalRef = useRef(null);
+
+  const openModal = (card) => {
+    setModalCard(card);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    // allow fade-out before clearing content, optional
+    setTimeout(() => setModalCard(null), 200);
+  };
+
+  // Manage Bootstrap-like modal classes manually (no Bootstrap JS dependency)
+  useEffect(() => {
+    const modalEl = modalRef.current;
+    if (!modalEl) return;
+
+    const addBackdrop = () => {
+      const backdrop = document.createElement("div");
+      backdrop.className = "modal-backdrop fade show";
+      backdrop.setAttribute("data-generated", "true");
+      document.body.appendChild(backdrop);
+    };
+
+    const removeBackdrop = () => {
+      const backdrop = document.querySelector('.modal-backdrop[data-generated="true"]');
+      if (backdrop) backdrop.remove();
+    };
+
+    if (modalOpen) {
+      modalEl.style.display = "block";
+      modalEl.classList.add("show");
+      modalEl.removeAttribute("aria-hidden");
+      document.body.classList.add("modal-open");
+      addBackdrop();
+    } else {
+      modalEl.classList.remove("show");
+      modalEl.setAttribute("aria-hidden", "true");
+      modalEl.style.display = "none";
+      document.body.classList.remove("modal-open");
+      removeBackdrop();
+    }
+
+    return () => {
+      // Cleanup on unmount
+      document.body.classList.remove("modal-open");
+      const backdrop = document.querySelector('.modal-backdrop[data-generated="true"]');
+      if (backdrop) backdrop.remove();
+    };
+  }, [modalOpen]);
+
+  // Update a card's title (used by modal)
+  const handleUpdateCardTitle = (listId, cardId, newTitle) => {
+    if (!newTitle || !listId || !cardId) return;
+    setLists((prev) =>
+      prev.map((list) =>
+        list.id === listId
+          ? {
+              ...list,
+              cards: list.cards.map((c) =>
+                c.id === cardId ? { ...c, title: newTitle } : c
+              ),
+            }
+          : list
+      )
+    );
+    // Keep modal state in sync so it reflects the new title immediately
+    setModalCard((prev) => (prev ? { ...prev, title: newTitle } : prev));
+  };
 
   /** Toggle nav tabs */
   const handleToggle = (tab) => {
@@ -205,6 +283,7 @@ function Tcard() {
                             key={`${list.id}:${card.id}`}
                             id={`${list.id}:${card.id}`}
                             title={card.title}
+                            onClick={() => openModal({ ...card, listId: list.id, listTitle: list.title })}
                             type={card.type}
                             imageName={card.imageName}
                           />
@@ -416,6 +495,16 @@ function Tcard() {
           </ul>
         </div>
       </section>
+      {/* Card Modal */}
+      <CardModal
+        ref={modalRef}
+        title={modalCard?.title || ""}
+        listTitle={modalCard?.listTitle || ""}
+        listId={modalCard?.listId || ""}
+        cardId={modalCard?.id || ""}
+        onUpdateTitle={handleUpdateCardTitle}
+        onClose={closeModal}
+      />
     </div>
   );
 }

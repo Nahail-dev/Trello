@@ -1,12 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Link } from "react-router-dom";
-import { useRef } from "react";
-import CardModal from "./CardModal";
 
-const SortableCard = ({ id, title, type, imageName, thumbnail }) => {
-  const modalRef = useRef(null);
-
+const SortableCard = ({ id, title, type, imageName, thumbnail, onClick }) => {
   // Drag and Drop config
   const {
     attributes,
@@ -25,17 +21,18 @@ const SortableCard = ({ id, title, type, imageName, thumbnail }) => {
     borderRadius: "6px",
     marginBottom: "8px",
     color: "#b6c2cf",
-    cursor: "grab",
+    cursor: isDragging ? "grabbing" : "pointer",
     opacity: isDragging ? 0 : 1,
     maxWidth: "250px",
     overflowWrap: "break-word",
   };
 
-  // Function to open modal
-  const openModal = () => {
-    console.log("Card clicked");
-    const modal = new window.bootstrap.Modal(modalRef.current);
-    modal.show();
+  const { onClick: _ignoreOnClick, ...safeListeners } = listeners || {};
+
+  const handleClick = (e) => {
+    // Prevent click during drag
+    if (isDragging) return;
+    onClick?.(e);
   };
 
   return (
@@ -45,8 +42,8 @@ const SortableCard = ({ id, title, type, imageName, thumbnail }) => {
         ref={setNodeRef}
         style={style}
         {...attributes}
-        {...listeners}
-        onClick={openModal}
+        {...safeListeners}
+        onClick={handleClick}
       >
         {type === "text" && <p style={{ margin: 0 }}>{title}</p>}
 
@@ -88,8 +85,11 @@ const SortableCard = ({ id, title, type, imageName, thumbnail }) => {
             )}
             <Link
               to={title}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={(e) => {
+                // Prevent navigation; click opens modal instead
+                e.preventDefault();
+                handleClick(e);
+              }}
               style={{
                 color: "#4ea3ff",
                 textDecoration: "none",
@@ -103,9 +103,6 @@ const SortableCard = ({ id, title, type, imageName, thumbnail }) => {
           </div>
         )}
       </div>
-
-      {/* MODAL */}
-      <CardModal ref={modalRef} title={title} />
     </>
   );
 };
