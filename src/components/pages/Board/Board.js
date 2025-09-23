@@ -79,9 +79,9 @@ function Board() {
     }
   };
 
-  const handleDeleteBoard = async (boardId) => {
+  const handleDeleteBoard = async (_workspaceId, projectId) => {
     try {
-      await deleteProjects(boardId);
+      await deleteProjects(projectId);
       toast.success("Board deleted successfully!");
       // Optionally refresh the list
       fetchWorkspaces();

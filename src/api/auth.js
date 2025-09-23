@@ -43,7 +43,7 @@ export const getProjects = (workspace_id) => {
 };
 
 export const deleteProjects = (project_id) => {
-  API.delete(`api/projects/${project_id}`, { headers: authHeader() });
+  return API.delete(`api/projects/${project_id}`, { headers: authHeader() });
 };
 
 // User profile
