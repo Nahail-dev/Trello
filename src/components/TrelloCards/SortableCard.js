@@ -23,7 +23,6 @@ const SortableCard = ({ id, title, type, imageName, thumbnail, onClick }) => {
     color: "#b6c2cf",
     cursor: isDragging ? "grabbing" : "pointer",
     opacity: isDragging ? 0 : 1,
-    maxWidth: "250px",
     overflowWrap: "break-word",
   };
 
