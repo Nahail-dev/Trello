@@ -1,4 +1,5 @@
 import React, { forwardRef, useState, useEffect } from "react";
+import ActionDropdown from "./ActionDropdown";
 
 const CardModal = forwardRef(
   ({ title, listTitle, onClose, onUpdateTitle, listId, cardId }, ref) => {
@@ -21,27 +22,29 @@ const CardModal = forwardRef(
       onUpdateTitle(listId, cardId, trimmed);
       setIsEditing(false);
     };
-    
+
     // Auto-grow handler for description: keeps a fixed starting height and expands with content
     const handleDescriptionInput = (e) => {
       const el = e.target;
       const minPx = 96; // ~4 rows default
       const maxPx = Math.round(window.innerHeight * 0.45); // cap at ~45vh
-      el.style.height = 'auto';
+      el.style.height = "auto";
       const newH = Math.max(minPx, Math.min(el.scrollHeight, maxPx));
-      el.style.height = newH + 'px';
+      el.style.height = newH + "px";
     };
 
     // Initialize Bootstrap tooltips for action tags within this modal
     useEffect(() => {
-      const root = ref && 'current' in ref ? ref.current : null;
-      const bs = typeof window !== 'undefined' ? window.bootstrap : null;
+      const root = ref && "current" in ref ? ref.current : null;
+      const bs = typeof window !== "undefined" ? window.bootstrap : null;
       if (!root || !bs || !bs.Tooltip) return;
       const nodes = root.querySelectorAll('[data-bs-toggle="tooltip"]');
       const tooltips = Array.from(nodes).map((el) => new bs.Tooltip(el));
       return () => {
         tooltips.forEach((t) => {
-          try { t.dispose(); } catch {}
+          try {
+            t.dispose();
+          } catch {}
         });
       };
     }, [ref]);
@@ -321,27 +324,43 @@ const CardModal = forwardRef(
                     },
                     { key: "members", label: "Members", icon: "bi-people" },
                   ].map((item) => (
-                    <button
+                    <ActionDropdown
                       key={item.key}
-                      type="button"
-                      className="btn btn-sm d-flex align-items-center tag-btn"
-                      title={item.label}
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      style={{
-                        backgroundColor: "#0f1114",
-                        color: "#b6c2cf",
-                        border: "1px solid rgba(255,255,255,0.12)",
-                        borderRadius: 8,
-                        padding: "6px 10px",
-                      }}
-                    >
-                      <i
-                        className={`bi ${item.icon}`}
-                        style={{ marginRight: 6, opacity: 0.9 }}
-                      />
-                      {item.label}
-                    </button>
+                      variant={item.key} // <- tells dropdown which content to show
+                      button={
+                        <button
+                          type="button"
+                          className="btn btn-sm d-flex align-items-center tag-btn"
+                          title={item.label}
+                          style={{
+                            
+                            color: "#b6c2cf",
+                            border: "1px solid rgba(255,255,255,0.12)",
+                            borderRadius: 8,
+                            padding: "6px 10px",
+                          }}
+                        >
+                          <i
+                            className={`bi ${item.icon}`}
+                            style={{ marginRight: 6, opacity: 0.9 }}
+                          />
+                          {item.label}
+                        </button>
+                      }
+                      labels={[
+                        { id: 1, name: "Bug", color: "#e74c3c" },
+                        { id: 2, name: "Feature", color: "#27ae60" },
+                        { id: 3, name: "High Priority", color: "#f39c12" },
+                      ]}
+                      members={[
+                        { id: 1, name: "Alice" },
+                        { id: 2, name: "Bob" },
+                        { id: 3, name: "Charlie" },
+                      ]}
+                      onSelect={(type, value) =>
+                        console.log("Selected:", type, value)
+                      }
+                    />
                   ))}
                 </div>
 
@@ -351,7 +370,7 @@ const CardModal = forwardRef(
                   <textarea
                     className="form-control bg-dark text-light border-secondary mt-2 auto-grow-textarea"
                     placeholder="Add a more detailed description..."
-                    style={{ height: '70px', overflowY: 'auto' }}
+                    style={{ height: "70px", overflowY: "auto" }}
                     onInput={handleDescriptionInput}
                   />
                 </div>
