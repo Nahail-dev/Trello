@@ -73,7 +73,9 @@ function Tcard() {
     };
 
     const removeBackdrop = () => {
-      const backdrop = document.querySelector('.modal-backdrop[data-generated="true"]');
+      const backdrop = document.querySelector(
+        '.modal-backdrop[data-generated="true"]'
+      );
       if (backdrop) backdrop.remove();
     };
 
@@ -94,7 +96,9 @@ function Tcard() {
     return () => {
       // Cleanup on unmount
       document.body.classList.remove("modal-open");
-      const backdrop = document.querySelector('.modal-backdrop[data-generated="true"]');
+      const backdrop = document.querySelector(
+        '.modal-backdrop[data-generated="true"]'
+      );
       if (backdrop) backdrop.remove();
     };
   }, [modalOpen]);
@@ -283,7 +287,13 @@ function Tcard() {
                             key={`${list.id}:${card.id}`}
                             id={`${list.id}:${card.id}`}
                             title={card.title}
-                            onClick={() => openModal({ ...card, listId: list.id, listTitle: list.title })}
+                            onClick={() =>
+                              openModal({
+                                ...card,
+                                listId: list.id,
+                                listTitle: list.title,
+                              })
+                            }
                             type={card.type}
                             imageName={card.imageName}
                           />
@@ -307,6 +317,7 @@ function Tcard() {
                             placeholder="Enter text or paste link, or drag image here"
                             value={cardInput}
                             onChange={(e) => setCardInput(e.target.value)}
+                            autoFocus
                           />
                         ) : (
                           <div style={{ textAlign: "center" }}>
@@ -380,6 +391,7 @@ function Tcard() {
                   placeholder="Enter list name"
                   value={newListName}
                   onChange={(e) => setNewListName(e.target.value)}
+                  autoFocus
                 />
                 <div className="d-flex justify-content-between mt-2">
                   <button

@@ -9,10 +9,8 @@ function AdvSearchNav() {
     <div><nav className="navbar-custom border-bottom border-secondary">
     <div className="navbar-content">
       <div className="left-section">
-        <Link href="#" className="logo-container">
-          <div className="logo">
-            {/* <i className="bx bx-grid-alt" onClick={toggleSidebar}></i> */}
-          </div>
+        <Link to="#" className="logo-container">
+         
           <span className="trellohover d-flex">
             <div className="trello-icon me-2">
               <div className="bar left"></div>
@@ -46,7 +44,7 @@ function AdvSearchNav() {
               </div>
               <Link
                 className="advanced-search text-decoration-none"
-                href="advanced-search.html"
+                to="advanced-search.html"
               >
                 <i className="bx bx-search"></i> Advanced search
               </Link>
@@ -54,7 +52,7 @@ function AdvSearchNav() {
           </div>
         </div>
         <i className="bx bx-search center-search-icon"></i>
-        <Link href="#" className="text-decoration-none">
+        <Link to="#" className="text-decoration-none">
           <button className="btn-create">Create</button>
         </Link>
       </div>
@@ -64,7 +62,7 @@ function AdvSearchNav() {
           <i className="bx bx-bell"></i>
           <span className="notification-tooltip">Notifications</span>
         </div>
-        <div className="avatar-container">
+        <div className="avatar-container" data-bs-toggle="dropdown">
           <div className="avatar">AT</div>
           <span className="avatar-tooltip">Account</span>
         </div>
@@ -80,17 +78,17 @@ function AdvSearchNav() {
           </button>
           <ul className="dropdown-menu dropdown-menu-end">
             <li>
-              <Link className="dropdown-item" href="#">
+              <Link className="dropdown-item" to="#">
                 <div className="dropdown-avatar">AT</div> Profile
               </Link>
             </li>
             <li>
-              <Link className="dropdown-item" href="#">
+              <Link className="dropdown-item" to="#">
                 <i className="bx bx-bell"></i> Notifications
               </Link>
             </li>
             <li>
-              <Link className="dropdown-item" href="#">
+              <Link className="dropdown-item" to="#">
                 <i className="bx bx-log-out"></i> Log out
               </Link>
             </li>
